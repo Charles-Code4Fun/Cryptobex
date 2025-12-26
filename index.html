@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <title>Cryptobex Quantech</title>
 <style>
 body { font-family: Arial; background:#0e1117; color:#e6e6e6; margin:20px;}
 h1{text-align:center; margin-bottom:20px;}
 .controls{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:15px;}
-input, select{padding:8px 10px; border-radius:6px; border:none; outline:none; background:#1c1f26; color:#fff;}
+input, select, button{padding:8px 10px; border-radius:6px; border:none; outline:none; background:#1c1f26; color:#fff; cursor:pointer;}
 table{width:100%; border-collapse:collapse; background:#161a22; border-radius:10px; overflow:hidden;}
 th, td{padding:10px; text-align:center; font-size:13px; border-bottom:1px solid #2a2f3a;}
 th{background:#1f2430; cursor:pointer;}
@@ -15,8 +15,6 @@ tr:hover{background:#1d2230;}
 .buy{color:#00ff9c; font-weight:bold;}
 .sell{color:#ff5c5c; font-weight:bold;}
 .hold{color:#ffd166; font-weight:bold;}
-.risk-high{color:#ff6b6b;}
-.risk-neutral{color:#ffd166;}
 .score-bar{height:6px; border-radius:3px; background:#2a2f3a; position:relative;}
 .score-fill{height:100%; border-radius:3px;}
 .positive{background:#00ff9c;}
@@ -39,6 +37,7 @@ tr:hover{background:#1d2230;}
         <option value="SELL">SELL</option>
         <option value="HOLD">HOLD</option>
     </select>
+    <button onclick="loadCSV()">刷新数据</button>
 </div>
 
 <table>
@@ -57,21 +56,21 @@ tr:hover{background:#1d2230;}
 <tbody id="tableBody"></tbody>
 </table>
 
-<!-- PapaParse -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
 let data = [];
 let currentSort = { key: null, asc: true };
 
 function loadCSV() {
-    Papa.parse("data/crypto_rating_table.csv", {
+    const url = "data/crypto_rating_table.csv?t=" + new Date().getTime();
+    Papa.parse(url, {
         header: true,
         download: true,
         dynamicTyping: true,
         skipEmptyLines: true,
         complete: function(results) {
             data = results.data
-                .filter(d => d.Symbol) // 过滤空行
+                .filter(d => d.Symbol)
                 .map(d => ({
                     Symbol: d.Symbol,
                     Current: parseFloat(d['Current Price']) || 0,
@@ -99,7 +98,6 @@ function renderTable() {
     const signalF = document.getElementById("signalFilter").value;
 
     body.innerHTML = "";
-
     data
     .filter(d => (d.Symbol || "").toUpperCase().includes(search) &&
                  (signalF === "" || d.Signal === signalF))
@@ -126,9 +124,8 @@ function renderTable() {
 }
 
 function sortTable(key) {
-    if (currentSort.key === key) currentSort.asc = !currentSort.asc;
-    else currentSort = { key, asc: true };
-
+    if(currentSort.key===key) currentSort.asc=!currentSort.asc;
+    else currentSort={key,asc:true};
     data.sort((a,b)=>{
         if(typeof a[key]==='string') return currentSort.asc ? a[key].localeCompare(b[key]) : b[key].localeCompare(a[key]);
         return currentSort.asc ? a[key]-b[key] : b[key]-a[key];
@@ -142,5 +139,6 @@ document.getElementById("signalFilter").addEventListener("change", renderTable);
 // 初始化
 loadCSV();
 </script>
+
 </body>
 </html>
