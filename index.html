@@ -22,6 +22,25 @@ tr:hover{background:#1d2230;}
 .trend-up::after{content:" ▲"; color:#00ff9c;}
 .trend-down::after{content:" ▼"; color:#ff5c5c;}
 .trend-flat::after{content:" ●"; color:#aaa;}
+.tooltip {
+    position: absolute;
+    background: #1f2430;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    display: none;
+    pointer-events: none;
+    z-index: 100;
+    max-width: 300px;
+    line-height: 1.3;
+}
+.footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+}
 @media(max-width:800px){table{display:block;overflow-x:auto;}}
 </style>
 </head>
@@ -37,7 +56,7 @@ tr:hover{background:#1d2230;}
         <option value="SELL">SELL</option>
         <option value="HOLD">HOLD</option>
     </select>
-    <button onclick="loadCSV()">Data Refresh<button>
+    <button onclick="loadCSV()">Refresh Data</button>
 </div>
 
 <table>
@@ -55,6 +74,13 @@ tr:hover{background:#1d2230;}
 </thead>
 <tbody id="tableBody"></tbody>
 </table>
+
+<div class="tooltip" id="tooltip"></div>
+
+<div class="footer">
+    Disclaimer: This platform is not a financial service and assumes no legal responsibility for investment advice.<br>
+    Powered by Cybex
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
@@ -81,7 +107,9 @@ function loadCSV() {
                     Safety: parseFloat(d['Safety Score']) || 0,
                     Signal: d.Signal || 'HOLD',
                     Return: parseFloat(d['Expected Return (%)']) || 0,
-                    Risk: d.Risk || ''
+                    Risk: d.Risk || '',
+                    Conclusion: d.Conclusion || '',
+                    FuturePrices: d['Future Prices'] || ''
                 }));
             renderTable();
         },
@@ -96,6 +124,7 @@ function renderTable() {
     const body = document.getElementById("tableBody");
     const search = (document.getElementById("search").value || "").toUpperCase();
     const signalF = document.getElementById("signalFilter").value;
+    const tooltip = document.getElementById("tooltip");
 
     body.innerHTML = "";
     data
@@ -119,6 +148,20 @@ function renderTable() {
             <td class="${d.Signal.toLowerCase()}">${d.Signal}</td>
             <td>${d.Return}%</td>
         `;
+        // 鼠标悬停显示 conclusion 和 future prices
+        tr.addEventListener('mouseenter', (e)=>{
+            tooltip.style.display = 'block';
+            tooltip.innerHTML = `<strong>Conclusion:</strong> ${d.Conclusion}<br>
+                                 <strong>Future Prices:</strong> ${d.FuturePrices}`;
+        });
+        tr.addEventListener('mousemove', (e)=>{
+            tooltip.style.top = (e.pageY + 15) + "px";
+            tooltip.style.left = (e.pageX + 15) + "px";
+        });
+        tr.addEventListener('mouseleave', ()=>{
+            tooltip.style.display = 'none';
+        });
+
         body.appendChild(tr);
     });
 }
@@ -136,7 +179,6 @@ function sortTable(key) {
 document.getElementById("search").addEventListener("input", renderTable);
 document.getElementById("signalFilter").addEventListener("change", renderTable);
 
-// 初始化
 loadCSV();
 </script>
 
