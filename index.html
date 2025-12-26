@@ -7,7 +7,7 @@
 body { font-family: Arial; background:#0e1117; color:#e6e6e6; margin:20px;}
 h1{text-align:center; margin-bottom:20px;}
 .controls{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:15px;}
-input, select, button{padding:8px 10px; border-radius:6px; border:none; outline:none; background:#1c1f26; color:#fff; cursor:pointer;}
+input, select{padding:8px 10px; border-radius:6px; border:none; outline:none; background:#1c1f26; color:#fff;}
 table{width:100%; border-collapse:collapse; background:#161a22; border-radius:10px; overflow:hidden;}
 th, td{padding:10px; text-align:center; font-size:13px; border-bottom:1px solid #2a2f3a;}
 th{background:#1f2430; cursor:pointer;}
@@ -15,6 +15,8 @@ tr:hover{background:#1d2230;}
 .buy{color:#00ff9c; font-weight:bold;}
 .sell{color:#ff5c5c; font-weight:bold;}
 .hold{color:#ffd166; font-weight:bold;}
+.risk-high{color:#ff6b6b;}
+.risk-neutral{color:#ffd166;}
 .score-bar{height:6px; border-radius:3px; background:#2a2f3a; position:relative;}
 .score-fill{height:100%; border-radius:3px;}
 .positive{background:#00ff9c;}
@@ -22,26 +24,32 @@ tr:hover{background:#1d2230;}
 .trend-up::after{content:" ▲"; color:#00ff9c;}
 .trend-down::after{content:" ▼"; color:#ff5c5c;}
 .trend-flat::after{content:" ●"; color:#aaa;}
+@media(max-width:800px){table{display:block;overflow-x:auto;}}
+
+/* Tooltip */
 .tooltip {
     position: absolute;
     background: #1f2430;
-    color: #fff;
-    padding: 6px 10px;
+    color: #e6e6e6;
+    padding: 8px 12px;
     border-radius: 6px;
     font-size: 12px;
-    display: none;
+    z-index: 1000;
     pointer-events: none;
-    z-index: 100;
     max-width: 300px;
-    line-height: 1.3;
+    white-space: normal;
+    word-break: break-word;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    display: none;
 }
-.footer {
-    margin-top: 30px;
+
+/* Footer */
+footer {
     text-align: center;
+    margin-top: 20px;
     font-size: 12px;
-    color: #888;
+    color: #aaa;
 }
-@media(max-width:800px){table{display:block;overflow-x:auto;}}
 </style>
 </head>
 <body>
@@ -56,7 +64,6 @@ tr:hover{background:#1d2230;}
         <option value="SELL">SELL</option>
         <option value="HOLD">HOLD</option>
     </select>
-    <button onclick="loadCSV()">Refresh Data</button>
 </div>
 
 <table>
@@ -77,19 +84,26 @@ tr:hover{background:#1d2230;}
 
 <div class="tooltip" id="tooltip"></div>
 
-<div class="footer">
-    Disclaimer: This platform is not a financial service and assumes no legal responsibility for investment advice.<br>
-    Powered by Cybex
-</div>
+<footer>
+⚠️ This platform is not a financial service and is not responsible for investment advice.<br>
+Powered by Cybex
+</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
 let data = [];
 let currentSort = { key: null, asc: true };
+const tooltip = document.getElementById("tooltip");
 
+// HTML 转义
+function escapeHtml(text) {
+    const map = { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' };
+    return String(text).replace(/[&<>"']/g, m => map[m]);
+}
+
+// 加载 CSV
 function loadCSV() {
-    const url = "data/crypto_rating_table.csv?t=" + new Date().getTime();
-    Papa.parse(url, {
+    Papa.parse("data/crypto_rating_table.csv", {
         header: true,
         download: true,
         dynamicTyping: true,
@@ -114,26 +128,28 @@ function loadCSV() {
             renderTable();
         },
         error: function(err){
-            console.error("CSV加载失败", err);
-            alert("CSV加载失败，请确保文件路径正确！");
+            console.error("CSV load failed", err);
+            alert("CSV load failed, check file path!");
         }
     });
 }
 
+// 渲染表格
 function renderTable() {
     const body = document.getElementById("tableBody");
     const search = (document.getElementById("search").value || "").toUpperCase();
     const signalF = document.getElementById("signalFilter").value;
-    const tooltip = document.getElementById("tooltip");
-
     body.innerHTML = "";
+
     data
     .filter(d => (d.Symbol || "").toUpperCase().includes(search) &&
                  (signalF === "" || d.Signal === signalF))
     .forEach(d => {
         const tr = document.createElement("tr");
+        tr.dataset.conclusion = escapeHtml(d.Conclusion);
+        tr.dataset.future = escapeHtml(d.FuturePrices);
         tr.innerHTML = `
-            <td>${d.Symbol}</td>
+            <td>${escapeHtml(d.Symbol)}</td>
             <td>${d.Current}</td>
             <td>${d.Predicted}</td>
             <td class="trend-${d.Trend}">${d.Trend}</td>
@@ -145,30 +161,17 @@ function renderTable() {
                 </div>
                 ${d.Safety}
             </td>
-            <td class="${d.Signal.toLowerCase()}">${d.Signal}</td>
+            <td class="${d.Signal.toLowerCase()}">${escapeHtml(d.Signal)}</td>
             <td>${d.Return}%</td>
         `;
-        // 鼠标悬停显示 conclusion 和 future prices
-        tr.addEventListener('mouseenter', (e)=>{
-            tooltip.style.display = 'block';
-            tooltip.innerHTML = `<strong>Conclusion:</strong> ${d.Conclusion}<br>
-                                 <strong>Future Prices:</strong> ${d.FuturePrices}`;
-        });
-        tr.addEventListener('mousemove', (e)=>{
-            tooltip.style.top = (e.pageY + 15) + "px";
-            tooltip.style.left = (e.pageX + 15) + "px";
-        });
-        tr.addEventListener('mouseleave', ()=>{
-            tooltip.style.display = 'none';
-        });
-
         body.appendChild(tr);
     });
 }
 
+// 排序
 function sortTable(key) {
-    if(currentSort.key===key) currentSort.asc=!currentSort.asc;
-    else currentSort={key,asc:true};
+    if (currentSort.key === key) currentSort.asc = !currentSort.asc;
+    else currentSort = { key, asc: true };
     data.sort((a,b)=>{
         if(typeof a[key]==='string') return currentSort.asc ? a[key].localeCompare(b[key]) : b[key].localeCompare(a[key]);
         return currentSort.asc ? a[key]-b[key] : b[key]-a[key];
@@ -176,11 +179,30 @@ function sortTable(key) {
     renderTable();
 }
 
+// 事件委托实现 tooltip
+document.getElementById("tableBody").addEventListener("mousemove", function(e){
+    const tr = e.target.closest("tr");
+    if(tr){
+        tooltip.style.display = "block";
+        tooltip.style.top = (e.pageY + 10) + "px";
+        tooltip.style.left = (e.pageX + 10) + "px";
+        tooltip.innerHTML = `<strong>Conclusion:</strong> ${tr.dataset.conclusion}<br>
+                             <strong>Future Prices:</strong> ${tr.dataset.future}`;
+    } else {
+        tooltip.style.display = "none";
+    }
+});
+
+document.getElementById("tableBody").addEventListener("mouseleave", function(){
+    tooltip.style.display = "none";
+});
+
+// 搜索和筛选
 document.getElementById("search").addEventListener("input", renderTable);
 document.getElementById("signalFilter").addEventListener("change", renderTable);
 
+// 初始化
 loadCSV();
 </script>
-
 </body>
 </html>
