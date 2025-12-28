@@ -1190,3 +1190,4 @@ POND/BUSD,0.01,0.01,Upward Trend,1,Low Risk,Unsafe,28.4,3 Neutral,"Quantitative 
 DEXE/BUSD,2.1,1.95,Downward Trend,-1,Low Risk,Unsafe,38.9,2 Risk High,"Quantitative Multi-Factor Signal: Predicted return ~-7.2%, Safety 38.9/100, Risk: Low Risk","2.05,2.03,2.0,1.98,1.95",SELL,-2.4,-7.2
 DIA/BUSD,0.24,0.24,Upward Trend,1,High Risk,Unsafe,23.9,2 Risk High,"Quantitative Multi-Factor Signal: Predicted return ~0.0%, Safety 23.9/100, Risk: High Risk","0.24,0.24,0.24,0.24,0.24",HOLD,0.0,0.0
 GMT/BUSD,0.23,0.24,Upward Trend,1,High Risk,Unsafe,-22.9,3 Neutral,"Quantitative Multi-Factor Signal: Predicted return ~3.6%, Safety -22.9/100, Risk: High Risk","0.23,0.23,0.23,0.23,0.24",HOLD,1.2,3.6
+NOM/USDC,0.01,0.01,Unknown,0,High Risk,Unsafe,-45.2,2 Risk High,"Quantitative Multi-Factor Signal: Predicted return ~0.0%, Safety -45.2/100, Risk: High Risk","0.01,0.01,0.01,0.01,0.01",HOLD,0.0,0.0
