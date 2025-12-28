@@ -3,84 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <title>Coin Trend</title>
-
 <style>
-body {
-    background: #0e1117;
-    color: #e6e6e6;
-    font-family: Arial;
-    margin: 20px;
-}
-h1 {
-    text-align: center;
-    margin-bottom: 10px;
-}
-#chartContainer {
-    max-width: 1100px;
-    margin: 0 auto;
-}
-button {
-    margin: 10px 0;
-    padding: 8px 14px;
-    background: #1f2430;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-button:hover {
-    background: #2a2f3a;
-}
-.error {
-    text-align: center;
-    color: #ff6b6b;
-}
+body { background:#0e1117; color:#e6e6e6; font-family: Arial; margin:20px; }
+h1 { text-align:center; margin-bottom:10px; }
+#chartContainer { max-width:1100px; margin:0 auto; height:600px; }
+#riskContainer { max-width:1100px; margin:20px auto; padding:15px; background:#1c1f26; border-radius:8px; font-size:14px; line-height:1.6; }
+#riskContainer div { margin-bottom:10px; }
+.star { color: gold; font-size:16px; }
+button { margin:10px 0; padding:8px 14px; background:#1f2430; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+button:hover { background:#2a2f3a; }
+.error { text-align:center; color:#ff6b6b; margin-top:10px; }
 </style>
 
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@3.3.0"></script>
+<!-- Plotly.js -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 
 <body>
-
 <button onclick="goBack()">← Back to Dashboard</button>
-
 <h1 id="title">Coin Trend</h1>
 
-<div id="chartContainer">
-    <canvas id="ohlcChart"></canvas>
-</div>
-
+<div id="chartContainer"></div>
+<div id="riskContainer">Loading risk info...</div>
 <div class="error" id="error"></div>
 
 <script>
-function goBack() {
-    window.location.href = "index.html";
-}
+function goBack() { window.location.href = "index.html"; }
 
-// -------- 安全获取 symbol --------
+// 获取 symbol
 const params = new URLSearchParams(window.location.search);
 let symbol = params.get("symbol");
 
-// 防御：只允许字母、数字、下划线
-if (!symbol || !/^[A-Z0-9_]+$/.test(symbol)) {
-    document.getElementById("error").innerText = "Invalid symbol parameter.";
+// 安全检查
+if(!symbol || !/^[A-Z0-9_]+$/.test(symbol)){
+    document.getElementById("error").innerText="Invalid symbol parameter.";
     throw new Error("Invalid symbol");
 }
 
 document.getElementById("title").innerText = symbol + " OHLC Chart";
 
-// -------- CSV 路径 --------
-const csvPath = `data/${symbol}/${symbol}_data.csv`;
+// CSV 路径
+const ohlcCsvPath = `data/${symbol}/${symbol}_data.csv`;
+const ratingCsvPath = `data/crypto_rating_table.csv`;
 
-// -------- 加载并解析 CSV --------
-fetch(csvPath)
-.then(res => {
-    if (!res.ok) throw new Error("CSV not found");
+// ---------- 加载 OHLC CSV ----------
+fetch(ohlcCsvPath)
+.then(res=>{
+    if(!res.ok) throw new Error("CSV not found");
     return res.text();
 })
-.then(text => {
+.then(text=>{
+    console.log("Fetching CSV:", ohlcCsvPath);
     const lines = text.trim().split("\n");
     const header = lines.shift().split(",");
 
@@ -92,64 +65,100 @@ fetch(csvPath)
         close: header.indexOf("Close")
     };
 
-    if (Object.values(idx).some(i => i === -1)) {
-        throw new Error("CSV format invalid");
-    }
+    const dates=[], opens=[], highs=[], lows=[], closes=[];
+    lines.forEach(line=>{
+        const c=line.split(",");
+        dates.push(c[idx.date]);
+        opens.push(parseFloat(c[idx.open]));
+        highs.push(parseFloat(c[idx.high]));
+        lows.push(parseFloat(c[idx.low]));
+        closes.push(parseFloat(c[idx.close]));
+    });
 
-    const data = lines.map(l => {
-        const c = l.split(",");
-        return {
-            x: new Date(c[idx.date]),
-            o: parseFloat(c[idx.open]),
-            h: parseFloat(c[idx.high]),
-            l: parseFloat(c[idx.low]),
-            c: parseFloat(c[idx.close])
-        };
-    }).filter(d => !isNaN(d.o));
-
-    renderChart(data);
+    renderChart(dates, opens, highs, lows, closes);
 })
-.catch(err => {
-    document.getElementById("error").innerText =
-        "Failed to load OHLC data. Please check CSV file.";
+.catch(err=>{
+    document.getElementById("error").innerText="Failed to load OHLC data. See console.";
     console.error(err);
 });
 
-// -------- 渲染 K 线 --------
-function renderChart(data) {
-    const ctx = document.getElementById("ohlcChart").getContext("2d");
+// ---------- 渲染 K 线 ----------
+function renderChart(dates, opens, highs, lows, closes){
+    const trace = {
+        x: dates,
+        open: opens,
+        high: highs,
+        low: lows,
+        close: closes,
+        type: 'candlestick',
+        increasing: {line: {color:'#00ff9c'}},
+        decreasing: {line: {color:'#ff5c5c'}}
+    };
 
-    new Chart(ctx, {
-        type: "candlestick",
-        data: {
-            datasets: [{
-                label: symbol,
-                data: data,
-                color: {
-                    up: "#00ff9c",
-                    down: "#ff5c5c",
-                    unchanged: "#aaa"
-                }
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false }
-            },
-            scales: {
-                x: {
-                    ticks: { color: "#aaa" },
-                    grid: { color: "#222" }
-                },
-                y: {
-                    ticks: { color: "#aaa" },
-                    grid: { color: "#222" }
-                }
-            }
-        }
-    });
+    const layout = {
+        paper_bgcolor: "#0e1117",
+        plot_bgcolor: "#0e1117",
+        font: {color:'#e6e6e6'},
+        xaxis: {title:'Date', gridcolor:'#222'},
+        yaxis: {title:'Price', gridcolor:'#222'}
+    };
+
+    Plotly.newPlot('chartContainer',[trace], layout, {responsive:true});
 }
+
+// ---------- 加载 Rating CSV ----------
+// ---------- 加载 Rating CSV ----------
+fetch(ratingCsvPath)
+.then(res=>{
+    if(!res.ok) throw new Error("Rating CSV not found");
+    return res.text();
+})
+.then(text=>{
+    const lines = text.trim().split("\n");
+    const header = lines.shift().split(",");
+    const idx = {
+        symbol: header.indexOf("Symbol"),
+        risk: header.indexOf("Risk"),
+        safetyScore: header.indexOf("Safety Score"),
+        investment: header.indexOf("Investment Rating"),
+        conclusion: header.indexOf("Conclusion")
+    };
+
+    // 转换 symbol 格式：USDC_USDT -> USDC/USDT
+    const symbolInRating = symbol.replace("_","/");
+
+    const row = lines.map(l=>l.split(",")).find(r=>r[idx.symbol]===symbolInRating);
+    const container = document.getElementById("riskContainer");
+    if(!row){ container.innerText="No rating info for this symbol."; return; }
+
+    const risk = row[idx.risk] || "N/A";
+    const safetyScore = parseFloat(row[idx.safetyScore]) || 0;
+    const investment = row[idx.investment] || "N/A";
+    const conclusion = row[idx.conclusion] || "";
+
+    // 风险等级图标
+    let riskIcon = "⚪";
+    if(risk.toLowerCase().includes("low")) riskIcon="🟢 Low Risk";
+    else if(risk.toLowerCase().includes("med")) riskIcon="🟡 Medium Risk";
+    else if(risk.toLowerCase().includes("high")) riskIcon="🔴 High Risk";
+
+    // Safety 星星
+    const stars = Math.round(safetyScore/20);
+    const starStr = '<span class="star">'+ "★".repeat(stars) + "☆".repeat(5-stars) +'</span>';
+
+    // 渲染风险信息
+    container.innerHTML = `
+        <div><strong>Risk:</strong> ${riskIcon}</div>
+        <div><strong>Safety:</strong> ${starStr} (${safetyScore}/100)</div>
+        <div><strong>Investment Rating:</strong> ${investment}</div>
+        <div><strong>Conclusion:</strong> ${conclusion}</div>
+    `;
+})
+.catch(err=>{
+    console.error(err);
+    document.getElementById("riskContainer").innerText="Failed to load rating info.";
+});
+
 </script>
 
 </body>

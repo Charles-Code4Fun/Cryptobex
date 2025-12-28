@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cryptobex Quantech</title>
+<style>
+body { font-family: Arial; background:#0e1117; color:#e6e6e6; margin:20px;}
+h1{text-align:center; margin-bottom:20px;}
+.controls{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:15px;}
+input, select{padding:8px 10px; border-radius:6px; border:none; outline:none; background:#1c1f26; color:#fff;}
+table{width:100%; border-collapse:collapse; background:#161a22; border-radius:10px; overflow:hidden;}
+th, td{padding:10px; text-align:center; font-size:13px; border-bottom:1px solid #2a2f3a;}
+th{background:#1f2430; cursor:pointer;}
+tr:hover{background:#1d2230;}
+.buy{color:#00ff9c; font-weight:bold;}
+.sell{color:#ff5c5c; font-weight:bold;}
+.hold{color:#ffd166; font-weight:bold;}
+.risk-high{color:#ff6b6b;}
+.risk-neutral{color:#ffd166;}
+.score-bar{height:6px; border-radius:3px; background:#2a2f3a; position:relative;}
+.score-fill{height:100%; border-radius:3px;}
+.positive{background:#00ff9c;}
+.negative{background:#ff5c5c;}
+.trend-up::after{content:" ▲"; color:#00ff9c;}
+.trend-down::after{content:" ▼"; color:#ff5c5c;}
+.trend-flat::after{content:" ●"; color:#aaa;}
+@media(max-width:800px){table{display:block;overflow-x:auto;}}
+
+/* Tooltip */
+.tooltip {
+    position: absolute;
+    background: #1f2430;
+    color: #e6e6e6;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    z-index: 1000;
+    pointer-events: none;
+    max-width: 300px;
+    white-space: normal;
+    word-break: break-word;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    display: none;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    color: #aaa;
+}
+</style>
+</head>
+<body>
+
+<h1>📊 Cryptobex Rank</h1>
+
+<div class="controls">
+    <input type="text" id="search" placeholder="Search Symbol (e.g. ADA)" />
+    <select id="signalFilter">
+        <option value="">All Signals</option>
+        <option value="BUY">BUY</option>
+        <option value="SELL">SELL</option>
+        <option value="HOLD">HOLD</option>
+    </select>
+</div>
+
+<table>
+<thead>
+<tr>
+    <th onclick="sortTable('Symbol')">Symbol</th>
+    <th onclick="sortTable('Current')">Price</th>
+    <th onclick="sortTable('Predicted')">Predicted</th>
+    <th>Trend</th>
+    <th onclick="sortTable('Composite')">Composite</th>
+    <th>Safety</th>
+    <th>Signal</th>
+    <th onclick="sortTable('Return')">Return %</th>
+</tr>
+</thead>
+<tbody id="tableBody"></tbody>
+</table>
+
+<div class="tooltip" id="tooltip"></div>
+
+<footer>
+⚠️ This platform is not a financial service and is not responsible for investment advice.<br>
+Powered by Cybex
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script>
+let data = [];
+let currentSort = { key: null, asc: true };
+const tooltip = document.getElementById("tooltip");
+
+// HTML 转义
+function escapeHtml(text) {
+    const map = { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' };
+    return String(text).replace(/[&<>"']/g, m => map[m]);
+}
+
+// 加载 CSV
+function loadCSV() {
+    Papa.parse("data/crypto_rating_table.csv", {
+        header: true,
+        download: true,
+        dynamicTyping: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+            data = results.data
+                .filter(d => d.Symbol)
+                .map(d => ({
+                    Symbol: d.Symbol,
+                    Current: parseFloat(d['Current Price']) || 0,
+                    Predicted: parseFloat(d['Predicted Price']) || 0,
+                    Trend: (d.Trend === 'Upward Trend') ? 'up' :
+                           (d.Trend === 'Downward Trend') ? 'down' : 'flat',
+                    Composite: parseFloat(d['Composite Score']) || 0,
+                    Safety: parseFloat(d['Safety Score']) || 0,
+                    Signal: d.Signal || 'HOLD',
+                    Return: parseFloat(d['Expected Return (%)']) || 0,
+                    Risk: d.Risk || '',
+                    Conclusion: d.Conclusion || '',
+                    FuturePrices: d['Future Prices'] || ''
+                }));
+            renderTable();
+        },
+        error: function(err){
+            console.error("CSV load failed", err);
+            alert("CSV load failed, check file path!");
+        }
+    });
+}
+
+// 渲染表格
+function renderTable() {
+    const body = document.getElementById("tableBody");
+    const search = (document.getElementById("search").value || "").toUpperCase();
+    const signalF = document.getElementById("signalFilter").value;
+    body.innerHTML = "";
+
+    data
+    .filter(d => (d.Symbol || "").toUpperCase().includes(search) &&
+                 (signalF === "" || d.Signal === signalF))
+    .forEach(d => {
+        const tr = document.createElement("tr");
+        tr.dataset.conclusion = escapeHtml(d.Conclusion);
+        tr.dataset.future = escapeHtml(d.FuturePrices);
+        tr.innerHTML = `
+            <td>${escapeHtml(d.Symbol)}</td>
+            <td>${d.Current}</td>
+            <td>${d.Predicted}</td>
+            <td class="trend-${d.Trend}">${d.Trend}</td>
+            <td>${d.Composite}</td>
+            <td>
+                <div class="score-bar">
+                    <div class="score-fill ${d.Safety>=0?'positive':'negative'}"
+                         style="width:${Math.min(Math.abs(d.Safety),100)}%"></div>
+                </div>
+                ${d.Safety}
+            </td>
+            <td class="${d.Signal.toLowerCase()}">${escapeHtml(d.Signal)}</td>
+            <td>${d.Return}%</td>
+        `;
+        body.appendChild(tr);
+    });
+}
+
+// 排序
+function sortTable(key) {
+    if (currentSort.key === key) currentSort.asc = !currentSort.asc;
+    else currentSort = { key, asc: true };
+    data.sort((a,b)=>{
+        if(typeof a[key]==='string') return currentSort.asc ? a[key].localeCompare(b[key]) : b[key].localeCompare(a[key]);
+        return currentSort.asc ? a[key]-b[key] : b[key]-a[key];
+    });
+    renderTable();
+}
+
+// 事件委托实现 tooltip
+document.getElementById("tableBody").addEventListener("mousemove", function(e){
+    const tr = e.target.closest("tr");
+    if(tr){
+        tooltip.style.display = "block";
+        tooltip.style.top = (e.pageY + 10) + "px";
+        tooltip.style.left = (e.pageX + 10) + "px";
+        tooltip.innerHTML = `<strong>Conclusion:</strong> ${tr.dataset.conclusion}<br>
+                             <strong>Future Prices:</strong> ${tr.dataset.future}`;
+    } else {
+        tooltip.style.display = "none";
+    }
+});
+
+document.getElementById("tableBody").addEventListener("mouseleave", function(){
+    tooltip.style.display = "none";
+});
+
+// 搜索和筛选
+document.getElementById("search").addEventListener("input", renderTable);
+document.getElementById("signalFilter").addEventListener("change", renderTable);
+
+// 初始化
+loadCSV();
+</script>
+</body>
+</html>

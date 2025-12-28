@@ -95,13 +95,11 @@ let data = [];
 let currentSort = { key: null, asc: true };
 const tooltip = document.getElementById("tooltip");
 
-// HTML 转义
 function escapeHtml(text) {
     const map = { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' };
     return String(text).replace(/[&<>"']/g, m => map[m]);
 }
 
-// 加载 CSV
 function loadCSV() {
     Papa.parse("data/crypto_rating_table.csv", {
         header: true,
@@ -126,15 +124,10 @@ function loadCSV() {
                     FuturePrices: d['Future Prices'] || ''
                 }));
             renderTable();
-        },
-        error: function(err){
-            console.error("CSV load failed", err);
-            alert("CSV load failed, check file path!");
         }
     });
 }
 
-// 渲染表格
 function renderTable() {
     const body = document.getElementById("tableBody");
     const search = (document.getElementById("search").value || "").toUpperCase();
@@ -149,7 +142,12 @@ function renderTable() {
         tr.dataset.conclusion = escapeHtml(d.Conclusion);
         tr.dataset.future = escapeHtml(d.FuturePrices);
         tr.innerHTML = `
-            <td>${escapeHtml(d.Symbol)}</td>
+            <td>
+              <a href="coinTrend.html?symbol=${encodeURIComponent(d.Symbol.replace('/', '_'))}"
+                 style="color:#00ff9c; text-decoration:none; font-weight:bold;">
+                 ${escapeHtml(d.Symbol)}
+              </a>
+            </td>
             <td>${d.Current}</td>
             <td>${d.Predicted}</td>
             <td class="trend-${d.Trend}">${d.Trend}</td>
@@ -168,7 +166,6 @@ function renderTable() {
     });
 }
 
-// 排序
 function sortTable(key) {
     if (currentSort.key === key) currentSort.asc = !currentSort.asc;
     else currentSort = { key, asc: true };
@@ -179,7 +176,6 @@ function sortTable(key) {
     renderTable();
 }
 
-// 事件委托实现 tooltip
 document.getElementById("tableBody").addEventListener("mousemove", function(e){
     const tr = e.target.closest("tr");
     if(tr){
@@ -193,15 +189,10 @@ document.getElementById("tableBody").addEventListener("mousemove", function(e){
     }
 });
 
-document.getElementById("tableBody").addEventListener("mouseleave", function(){
-    tooltip.style.display = "none";
-});
-
-// 搜索和筛选
+document.getElementById("tableBody").addEventListener("mouseleave", ()=>tooltip.style.display="none");
 document.getElementById("search").addEventListener("input", renderTable);
 document.getElementById("signalFilter").addEventListener("change", renderTable);
 
-// 初始化
 loadCSV();
 </script>
 </body>
