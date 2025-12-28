@@ -72,10 +72,10 @@ footer {
     <th onclick="sortTable('Symbol')">Symbol</th>
     <th onclick="sortTable('Current')">Price</th>
     <th onclick="sortTable('Predicted')">Predicted</th>
-    <th>Trend</th>
+    <th onclick="sortTable('Trend')">Trend</th>
     <th onclick="sortTable('Composite')">Composite</th>
-    <th>Safety</th>
-    <th>Signal</th>
+    <th onclick="sortTable('Safety')">Safety</th>
+    <th onclick="sortTable('Signal')">Signal</th>
     <th onclick="sortTable('Return')">Return %</th>
 </tr>
 </thead>
@@ -169,9 +169,26 @@ function renderTable() {
 function sortTable(key) {
     if (currentSort.key === key) currentSort.asc = !currentSort.asc;
     else currentSort = { key, asc: true };
+
+    const trendOrder = { up: 3, flat: 2, down: 1 };
+    const signalOrder = { 'BUY': 3, 'HOLD': 2, 'SELL': 1 };
+
     data.sort((a,b)=>{
-        if(typeof a[key]==='string') return currentSort.asc ? a[key].localeCompare(b[key]) : b[key].localeCompare(a[key]);
-        return currentSort.asc ? a[key]-b[key] : b[key]-a[key];
+        let va = a[key], vb = b[key];
+        // Trend 排序
+        if(key==='Trend'){
+            va = trendOrder[va] || 0;
+            vb = trendOrder[vb] || 0;
+        }
+        // Signal 排序
+        else if(key==='Signal'){
+            va = signalOrder[va] || 0;
+            vb = signalOrder[vb] || 0;
+        }
+        // Safety、Composite、Return是数字，直接比较
+        if(typeof va==='number' && typeof vb==='number') return currentSort.asc ? va-vb : vb-va;
+        // 其他字符串
+        return currentSort.asc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
     });
     renderTable();
 }
