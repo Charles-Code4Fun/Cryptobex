@@ -74,26 +74,56 @@ fetch(ratingCsvPath).then(res=>res.text()).then(text=>{
     `;
 }).catch(err=>{ console.error(err); document.getElementById("riskContainer").innerText="Rating is Not Availble in this version."; });
 
-// ---------- 加载 OHLC CSV ----------
-fetch(ohlcCsvPath).then(res=>res.text()).then(text=>{
-    const lines = text.trim().split("\n");
-    const header = lines.shift().split(",");
-    const idx = {date: header.indexOf("Date"), open: header.indexOf("Open"), high: header.indexOf("High"), low: header.indexOf("Low"), close: header.indexOf("Close")};
-    const dates=[], opens=[], highs=[], lows=[], closes=[];
-    lines.forEach(line=>{ 
-        const c=line.split(","); 
-        dates.push(c[idx.date]); 
-        opens.push(parseFloat(c[idx.open])); 
-        highs.push(parseFloat(c[idx.high])); 
-        lows.push(parseFloat(c[idx.low])); 
-        closes.push(parseFloat(c[idx.close])); 
-    });
+fetch(ohlcCsvPath)
+  .then(res => res.text())
+  .then(text => {
+      const lines = text.trim().split("\n");
+      if (lines.length <= 1) {
+          throw new Error("OHLC CSV is empty");
+      }
 
-    // 只保留最近 180 条
-    const total = dates.length;
-    const start = total>180 ? total-180 : 0;
-    renderChart(dates.slice(start), opens.slice(start), highs.slice(start), lows.slice(start), closes.slice(start));
-}).catch(err=>{ document.getElementById("error").innerText="Failed to load OHLC data. See console."; console.error(err); });
+      const header = lines.shift().split(",");
+      const idx = {
+          date:  header.indexOf("Date"),
+          open:  header.indexOf("Open"),
+          high:  header.indexOf("High"),
+          low:   header.indexOf("Low"),
+          close: header.indexOf("Close")
+      };
+
+      const dates  = [];
+      const opens  = [];
+      const highs  = [];
+      const lows   = [];
+      const closes = [];
+
+      lines.forEach(line => {
+          const c = line.split(",");
+          if (c.length < header.length) return; // In Case of Dirty Data
+
+          dates.push(c[idx.date]);
+          opens.push(parseFloat(c[idx.open]));
+          highs.push(parseFloat(c[idx.high]));
+          lows.push(parseFloat(c[idx.low]));
+          closes.push(parseFloat(c[idx.close]));
+      });
+
+      // ===== Remain the N Records =====
+      const WINDOW_DAYS = 180;
+
+      const datesN  = dates.slice(-WINDOW_DAYS);
+      const opensN  = opens.slice(-WINDOW_DAYS);
+      const highsN  = highs.slice(-WINDOW_DAYS);
+      const lowsN   = lows.slice(-WINDOW_DAYS);
+      const closesN = closes.slice(-WINDOW_DAYS);
+
+      renderChart(datesN, opensN, highsN, lowsN, closesN);
+  })
+  .catch(err => {
+      console.error(err);
+      document.getElementById("error").innerText =
+          "Failed to load OHLC data. Please check data source.";
+  });
 
 function renderChart(dates, opens, highs, lows, closes){
     const trace = {x:dates, open:opens, high:highs, low:lows, close:closes, type:'candlestick', increasing:{line:{color:'#00ff9c'}}, decreasing:{line:{color:'#ff5c5c'}}};
