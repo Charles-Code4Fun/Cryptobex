@@ -12,9 +12,12 @@ table{width:100%; border-collapse:collapse; background:#161a22; border-radius:10
 th, td{padding:10px; text-align:center; font-size:13px; border-bottom:1px solid #2a2f3a;}
 th{background:#1f2430; cursor:pointer;}
 tr:hover{background:#1d2230;}
-.buy{color:#00ff9c; font-weight:bold;}
-.sell{color:#ff5c5c; font-weight:bold;}
-.hold{color:#ffd166; font-weight:bold;}
+
+/* Signal colors for new names */
+.signal-ATTENTION{color:#00ff9c; font-weight:bold;}   /* 原 Buy 绿色 */
+.signal-UNDERWEIGHT{color:#ff5c5c; font-weight:bold;} /* 原 Sell 红色 */
+.signal-WATCHLIST{color:#ffd166; font-weight:bold;}   /* 原 Hold 橙色 */
+
 .risk-high{color:#ff6b6b;}
 .risk-neutral{color:#ffd166;}
 .score-bar{height:6px; border-radius:3px; background:#2a2f3a; position:relative;}
@@ -60,9 +63,9 @@ footer {
     <input type="text" id="search" placeholder="Search Symbol (e.g. ADA)" />
     <select id="signalFilter">
         <option value="">All Signals</option>
-        <option value="BUY">BUY</option>
-        <option value="SELL">SELL</option>
-        <option value="HOLD">HOLD</option>
+        <option value="ATTENTION">ATTENTION</option>
+        <option value="UNDERWEIGHT">UNDERWEIGHT</option>
+        <option value="WATCHLIST">WATCHLIST</option>
     </select>
 </div>
 
@@ -100,6 +103,13 @@ function escapeHtml(text) {
     return String(text).replace(/[&<>"']/g, m => map[m]);
 }
 
+// 根据 Composite Score 计算 Signal
+function mapSignalByComposite(composite) {
+    if (composite >= 2) return "ATTENTION";
+    else if (composite <= -2) return "UNDERWEIGHT";
+    else return "WATCHLIST";
+}
+
 function loadCSV() {
     Papa.parse("data/crypto_rating_table.csv", {
         header: true,
@@ -109,20 +119,23 @@ function loadCSV() {
         complete: function(results) {
             data = results.data
                 .filter(d => d.Symbol)
-                .map(d => ({
-                    Symbol: d.Symbol,
-                    Current: parseFloat(d['Current Price']) || 0,
-                    Predicted: parseFloat(d['Predicted Price']) || 0,
-                    Trend: (d.Trend === 'Upward Trend') ? 'up' :
-                           (d.Trend === 'Downward Trend') ? 'down' : 'flat',
-                    Composite: parseFloat(d['Composite Score']) || 0,
-                    Safety: parseFloat(d['Safety Score']) || 0,
-                    Signal: d.Signal || 'HOLD',
-                    Return: parseFloat(d['Expected Return (%)']) || 0,
-                    Risk: d.Risk || '',
-                    Conclusion: d.Conclusion || '',
-                    FuturePrices: d['Future Prices'] || ''
-                }));
+                .map(d => {
+                    const composite = parseFloat(d['Composite Score']) || 0;
+                    return {
+                        Symbol: d.Symbol,
+                        Current: parseFloat(d['Current Price']) || 0,
+                        Predicted: parseFloat(d['Predicted Price']) || 0,
+                        Trend: (d.Trend === 'Upward Trend') ? 'up' :
+                               (d.Trend === 'Downward Trend') ? 'down' : 'flat',
+                        Composite: composite,
+                        Safety: parseFloat(d['Safety Score']) || 0,
+                        Signal: mapSignalByComposite(composite),
+                        Return: parseFloat(d['Expected Return (%)']) || 0,
+                        Risk: d.Risk || '',
+                        Conclusion: d.Conclusion || '',
+                        FuturePrices: d['Future Prices'] || ''
+                    };
+                });
             renderTable();
         }
     });
@@ -159,7 +172,7 @@ function renderTable() {
                 </div>
                 ${d.Safety}
             </td>
-            <td class="${d.Signal.toLowerCase()}">${escapeHtml(d.Signal)}</td>
+            <td class="signal-${d.Signal}">${escapeHtml(d.Signal)}</td>
             <td>${d.Return}%</td>
         `;
         body.appendChild(tr);
@@ -171,23 +184,13 @@ function sortTable(key) {
     else currentSort = { key, asc: true };
 
     const trendOrder = { up: 3, flat: 2, down: 1 };
-    const signalOrder = { 'BUY': 3, 'HOLD': 2, 'SELL': 1 };
+    const signalOrder = { 'ATTENTION': 3, 'WATCHLIST': 2, 'UNDERWEIGHT': 1 };
 
     data.sort((a,b)=>{
         let va = a[key], vb = b[key];
-        // Trend 排序
-        if(key==='Trend'){
-            va = trendOrder[va] || 0;
-            vb = trendOrder[vb] || 0;
-        }
-        // Signal 排序
-        else if(key==='Signal'){
-            va = signalOrder[va] || 0;
-            vb = signalOrder[vb] || 0;
-        }
-        // Safety、Composite、Return是数字，直接比较
+        if(key==='Trend'){ va = trendOrder[va] || 0; vb = trendOrder[vb] || 0; }
+        else if(key==='Signal'){ va = signalOrder[va] || 0; vb = signalOrder[vb] || 0; }
         if(typeof va==='number' && typeof vb==='number') return currentSort.asc ? va-vb : vb-va;
-        // 其他字符串
         return currentSort.asc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
     });
     renderTable();
@@ -201,9 +204,7 @@ document.getElementById("tableBody").addEventListener("mousemove", function(e){
         tooltip.style.left = (e.pageX + 10) + "px";
         tooltip.innerHTML = `<strong>Conclusion:</strong> ${tr.dataset.conclusion}<br>
                              <strong>Future Prices:</strong> ${tr.dataset.future}`;
-    } else {
-        tooltip.style.display = "none";
-    }
+    } else { tooltip.style.display = "none"; }
 });
 
 document.getElementById("tableBody").addEventListener("mouseleave", ()=>tooltip.style.display="none");
