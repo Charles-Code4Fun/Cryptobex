@@ -140,11 +140,36 @@ function formatRisk(risk) {
 }
 
 // Score → 颜色进度条
+
+// function formatScore(score) {
+//     let s = parseFloat(score) || 0;
+//    let cls = s>=50 ? 'positive' : 'negative';
+//    return `<div class="score-bar"><div class="score-fill ${cls}" style="width:${Math.min(Math.abs(s),100)}%"></div></div>${s}`;
+//}
+
+
+// Score → 渐变颜色进度条（红→黄→绿）
 function formatScore(score) {
     let s = parseFloat(score) || 0;
-    let cls = s>=50 ? 'positive' : 'negative';
-    return `<div class="score-bar"><div class="score-fill ${cls}" style="width:${Math.min(Math.abs(s),100)}%"></div></div>${s}`;
+    let width = Math.min(Math.max(s, 0), 100);
+
+    // 红→黄→绿渐变
+    let r=0,g=0,b=0;
+    if(s <= 50){ 
+        // 0~50: 红到黄
+        r = 255;
+        g = Math.round(255 * (s/50)); // 0->255
+        b = 0;
+    } else { 
+        // 50~100: 黄到绿
+        r = Math.round(255 * (1-(s-50)/50)); // 255->0
+        g = 255;
+        b = 0;
+    }
+    let color = `rgb(${r},${g},${b})`;
+    return `<div class="score-bar"><div class="score-fill" style="width:${width}%;background:${color}"></div></div>${s}`;
 }
+
 
 function loadCSV() {
     Papa.parse("data/crypto_rating_table.csv", {
