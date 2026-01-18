@@ -18,11 +18,21 @@ tr:hover{background:#1d2230;}
 .signal-UNDERWEIGHT{color:#ff5c5c; font-weight:bold;}
 .signal-WATCHLIST{color:#ffd166; font-weight:bold;}
 
-/* Risk colors */
-.risk-Low\ Risk{color:#00ff9c; font-weight:bold;}
-.risk-Mediate{color:#ffd166; font-weight:bold;}
-.risk-High\ Risk{color:#ff5c5c; font-weight:bold;}
+/* Investment rating stars */
+.rating { font-weight:bold; }
+.rating-5 { color:#00ff9c; }  
+.rating-4 { color:#7fff00; }  
+.rating-3 { color:#ffd166; }  
+.rating-2 { color:#ff9f1c; }  
+.rating-1 { color:#ff5c5c; }
 
+/* Risk rating stars */
+.risk-star { font-weight:bold; }
+.risk-low { color:#00ff9c; } 
+.risk-medium { color:#ffd166; }
+.risk-high { color:#ff5c5c; }
+
+/* Score bar (Safety, Signal Quality) */
 .score-bar{height:6px; border-radius:3px; background:#2a2f3a; position:relative;}
 .score-fill{height:100%; border-radius:3px;}
 .positive{background:#00ff9c;}
@@ -65,7 +75,7 @@ footer {
 <h1>📊 Cryptobex Rank</h1>
 
 <div class="controls">
-    <input type="text" id="search" placeholder="Search Symbol (e.g. BTC)" />
+    <input type="text" id="search" placeholder="Search Symbol (e.g. ADA)" />
     <select id="signalFilter">
         <option value="">All Signals</option>
         <option value="ATTENTION">ATTENTION</option>
@@ -82,10 +92,10 @@ footer {
     <th onclick="sortTable('Trend')">Trend</th>
     <th onclick="sortTable('Composite')">Composite</th>
     <th onclick="sortTable('Safety')">Safety</th>
-    <th onclick="sortTable('SignalQuality')">Signal Quality</th>
-    <th onclick="sortTable('Risk')">Risk</th>
     <th onclick="sortTable('Signal')">Signal</th>
     <th onclick="sortTable('InvestmentRating')">Investment Rating</th>
+    <th onclick="sortTable('Risk')">Risk</th>
+    <th onclick="sortTable('SignalQuality')">Signal Quality</th>
     <th onclick="sortTable('Return')">Return %</th>
 </tr>
 </thead>
@@ -101,48 +111,66 @@ Powered by Cybex
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
-const tooltip = document.getElementById("tooltip");
 let data = [];
 let currentSort = { key: null, asc: true };
+const tooltip = document.getElementById("tooltip");
 
 function escapeHtml(text) {
-    if(text===undefined || text===null) return "";
-    return String(text).replace(/[&<>"']/g, m => ({
-        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
-    }[m]));
+    const map = { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' };
+    return String(text).replace(/[&<>"']/g, m => map[m]);
+}
+
+// Investment Rating → 星号和颜色
+function formatRating(rating) {
+    let num = parseInt(rating) || 0;
+    if(num < 1) num = 1;
+    if(num > 5) num = 5;
+    let stars = '★'.repeat(num) + '☆'.repeat(5-num);
+    return `<span class="rating rating-${num}">${stars}</span>`;
+}
+
+// Risk → 星号和颜色
+function formatRisk(risk) {
+    const r = (risk || '').toLowerCase();
+    let cls='', stars='★';
+    if(r.includes('low')) cls='risk-low';
+    else if(r.includes('mediate') || r.includes('medium')) cls='risk-medium';
+    else cls='risk-high';
+    return `<span class="risk-star ${cls}">${stars}</span>`;
+}
+
+// Score → 颜色进度条
+function formatScore(score) {
+    let s = parseFloat(score) || 0;
+    let cls = s>=50 ? 'positive' : 'negative';
+    return `<div class="score-bar"><div class="score-fill ${cls}" style="width:${Math.min(Math.abs(s),100)}%"></div></div>${s}`;
 }
 
 function loadCSV() {
-    Papa.parse("/data/crypto_rating_table.csv", {
-        header:true,
-        download:true,
-        dynamicTyping:true,
-        skipEmptyLines:true,
-        complete:function(results){
-            // 打印列名调试
-            console.log("Columns:", Object.keys(results.data[0]));
+    Papa.parse("data/crypto_rating_table.csv", {
+        header: true,
+        download: true,
+        dynamicTyping: true,
+        skipEmptyLines: true,
+        complete: function(results) {
             data = results.data
                 .filter(d => d.Symbol)
-                .map(d => {
-                    const trend = (d.Trend?.trim() === 'Upward Trend') ? 'up' :
-                                  (d.Trend?.trim() === 'Downward Trend') ? 'down' : 'flat';
-                    return {
-                        Symbol: d.Symbol?.trim() || "",
-                        Current: parseFloat(d['Current Price']) || 0,
-                        Trend: trend,
-                        Composite: parseFloat(d['Composite Score']) || 0,
-                        Safety: parseFloat(d['Safety Score']) || 0,
-                        SignalQuality: parseFloat(
-                            (d['Signal Quality Score']?.trim() || d['SignalQualityScore']?.trim() || 0)
-                        ) || 0,
-                        Risk: d.Risk?.trim() || '',
-                        Signal: d.Signal?.trim() || 'WATCHLIST',
-                        InvestmentRating: d['Investment Rating']?.trim() || '',
-                        Return: parseFloat(d['Expected Return (%)']) || 0,
-                        Conclusion: d.Conclusion || '',
-                        FuturePrices: d['Future Prices'] || ''
-                    };
-                });
+                .map(d => ({
+                    Symbol: d.Symbol,
+                    Current: parseFloat(d['Current Price']) || 0,
+                    Trend: (d.Trend === 'Upward Trend') ? 'up' :
+                           (d.Trend === 'Downward Trend') ? 'down' : 'flat',
+                    Composite: parseFloat(d['Composite Score']) || 0,
+                    Safety: parseFloat(d['Safety Score']) || 0,
+                    Signal: d.Signal || 'WATCHLIST',
+                    InvestmentRating: d['Investment Rating'] || '',
+                    Risk: d.Risk || '',
+                    SignalQuality: parseFloat((d['Signal Quality Score']?.trim() || d['SignalQualityScore']?.trim() || 0)) || 0,
+
+                    Return: parseFloat(d['Expected Return (%)']) || 0,
+                    Conclusion: d.Conclusion || '',
+                    FuturePrices: d['Future Prices'] || ''
+                }));
             renderTable();
         }
     });
@@ -154,68 +182,69 @@ function renderTable() {
     const signalF = document.getElementById("signalFilter").value;
     body.innerHTML = "";
 
-    data.filter(d => (d.Symbol.toUpperCase().includes(search)) &&
-                     (signalF === "" || d.Signal === signalF))
-        .forEach(d => {
-            const tr = document.createElement("tr");
-            tr.dataset.conclusion = escapeHtml(d.Conclusion);
-            tr.dataset.future = escapeHtml(d.FuturePrices);
-            tr.innerHTML = `
-                <td><a href="coinTrend.html?symbol=${encodeURIComponent(d.Symbol.replace('/', '_'))}"
-                       style="color:#00ff9c;text-decoration:none;font-weight:bold;">
-                       ${escapeHtml(d.Symbol)}</a></td>
-                <td>${d.Current}</td>
-                <td class="trend-${d.Trend}">${d.Trend}</td>
-                <td>${d.Composite}</td>
-                <td>
-                    <div class="score-bar">
-                        <div class="score-fill ${d.Safety>=0?'positive':'negative'}"
-                             style="width:${Math.min(Math.abs(d.Safety),100)}%"></div>
-                    </div>
-                    ${d.Safety}
-                </td>
-                <td>
-                    <div class="score-bar">
-                        <div class="score-fill ${d.SignalQuality>=50?'positive':'negative'}"
-                             style="width:${Math.min(Math.abs(d.SignalQuality),100)}%"></div>
-                    </div>
-                    ${d.SignalQuality}
-                </td>
-                <td class="risk-${d.Risk.replace(/\s/g,'\\ ')}">${escapeHtml(d.Risk)}</td>
-                <td class="signal-${d.Signal}">${escapeHtml(d.Signal)}</td>
-                <td>${escapeHtml(d.InvestmentRating)}</td>
-                <td>${d.Return}%</td>
-            `;
-            body.appendChild(tr);
-        });
+    data
+    .filter(d => (d.Symbol || "").toUpperCase().includes(search) &&
+                 (signalF === "" || d.Signal === signalF))
+    .forEach(d => {
+        const tr = document.createElement("tr");
+        tr.dataset.conclusion = escapeHtml(d.Conclusion);
+        tr.dataset.future = escapeHtml(d.FuturePrices);
+
+        tr.innerHTML = `
+            <td>
+              <a href="coinTrend.html?symbol=${encodeURIComponent(d.Symbol.replace('/', '_'))}"
+                 style="color:#00ff9c; text-decoration:none; font-weight:bold;">
+                 ${escapeHtml(d.Symbol)}
+              </a>
+            </td>
+            <td>${d.Current}</td>
+            <td class="trend-${d.Trend}">${d.Trend}</td>
+            <td>${d.Composite}</td>
+            <td>${formatScore(d.Safety)}</td>
+            <td class="signal-${d.Signal}">${escapeHtml(d.Signal)}</td>
+            <td>${formatRating(d.InvestmentRating)}</td>
+            <td>${formatRisk(d.Risk)}</td>
+            <td>${formatScore(d.SignalQuality)}</td>
+            <td>${d.Return}%</td>
+        `;
+        body.appendChild(tr);
+    });
 }
 
-// 排序
-function sortTable(key){
-    if(currentSort.key===key) currentSort.asc = !currentSort.asc;
-    else currentSort={key,asc:true};
-    const trendOrder = { up:3, flat:2, down:1 };
-    const signalOrder = { 'ATTENTION':3, 'WATCHLIST':2, 'UNDERWEIGHT':1 };
+function sortTable(key) {
+    if (currentSort.key === key) currentSort.asc = !currentSort.asc;
+    else currentSort = { key, asc: true };
+
+    const trendOrder = { up: 3, flat: 2, down: 1 };
+    const signalOrder = { 'ATTENTION': 3, 'WATCHLIST': 2, 'UNDERWEIGHT': 1 };
+
     data.sort((a,b)=>{
         let va = a[key], vb = b[key];
         if(key==='Trend'){ va = trendOrder[va] || 0; vb = trendOrder[vb] || 0; }
         else if(key==='Signal'){ va = signalOrder[va] || 0; vb = signalOrder[vb] || 0; }
-        if(typeof va==='number' && typeof vb==='number') return currentSort.asc?va-vb:vb-va;
-        return currentSort.asc?String(va).localeCompare(String(vb)):String(vb).localeCompare(String(va));
+        else if(key==='Risk'){ // 风险排序
+            const riskMap = {'low':3,'medium':2,'mediate':2,'high':1};
+            va = riskMap[(va||'').toLowerCase()]||0;
+            vb = riskMap[(vb||'').toLowerCase()]||0;
+        }
+        if(typeof va==='number' && typeof vb==='number') return currentSort.asc ? va-vb : vb-va;
+        return currentSort.asc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
     });
     renderTable();
 }
 
+// Tooltip
 document.getElementById("tableBody").addEventListener("mousemove", function(e){
     const tr = e.target.closest("tr");
     if(tr){
-        tooltip.style.display="block";
-        tooltip.style.top=(e.pageY+10)+"px";
-        tooltip.style.left=(e.pageX+10)+"px";
-        tooltip.innerHTML=`<strong>Conclusion:</strong> ${tr.dataset.conclusion}<br>
-                           <strong>Future Prices:</strong> ${tr.dataset.future}`;
-    }else{tooltip.style.display="none";}
+        tooltip.style.display = "block";
+        tooltip.style.top = (e.pageY + 10) + "px";
+        tooltip.style.left = (e.pageX + 10) + "px";
+        tooltip.innerHTML = `<strong>Conclusion:</strong> ${tr.dataset.conclusion}<br>
+                             <strong>Future Prices:</strong> ${tr.dataset.future}`;
+    } else { tooltip.style.display = "none"; }
 });
+
 document.getElementById("tableBody").addEventListener("mouseleave", ()=>tooltip.style.display="none");
 document.getElementById("search").addEventListener("input", renderTable);
 document.getElementById("signalFilter").addEventListener("change", renderTable);
