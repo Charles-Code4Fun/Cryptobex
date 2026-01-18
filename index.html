@@ -217,19 +217,30 @@ function sortTable(key) {
 
     const trendOrder = { up: 3, flat: 2, down: 1 };
     const signalOrder = { 'ATTENTION': 3, 'WATCHLIST': 2, 'UNDERWEIGHT': 1 };
+    const riskMap = {'low':3,'medium':2,'mediate':2,'high':1};
 
     data.sort((a,b)=>{
         let va = a[key], vb = b[key];
-        if(key==='Trend'){ va = trendOrder[va] || 0; vb = trendOrder[vb] || 0; }
-        else if(key==='Signal'){ va = signalOrder[va] || 0; vb = signalOrder[vb] || 0; }
-        else if(key==='Risk'){ // 风险排序
-            const riskMap = {'low':3,'medium':2,'mediate':2,'high':1};
-            va = riskMap[(va||'').toLowerCase()]||0;
-            vb = riskMap[(vb||'').toLowerCase()]||0;
+
+        if(key==='Trend'){ 
+            va = trendOrder[va] || 0; 
+            vb = trendOrder[vb] || 0; 
         }
+        else if(key==='Signal'){ 
+            va = signalOrder[va] || 0; 
+            vb = signalOrder[vb] || 0; 
+        }
+        else if(key==='Risk'){ 
+            va = (va||'').toLowerCase().split(' ')[0];
+            vb = (vb||'').toLowerCase().split(' ')[0];
+            va = riskMap[va] || 0;
+            vb = riskMap[vb] || 0;
+        }
+
         if(typeof va==='number' && typeof vb==='number') return currentSort.asc ? va-vb : vb-va;
         return currentSort.asc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
     });
+
     renderTable();
 }
 
