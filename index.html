@@ -165,7 +165,7 @@ function loadCSV() {
                     Signal: d.Signal || 'WATCHLIST',
                     InvestmentRating: d['Investment Rating'] || '',
                     Risk: d.Risk || '',
-                    SignalQuality: parseFloat((d['Signal Quality Score']?.trim() || d['SignalQualityScore']?.trim() || 0)) || 0,
+                    SignalQuality: parseFloat((d['Signal Quality Score'] || d['SignalQualityScore'] || 0)) || 0,
 
                     Return: parseFloat(d['Expected Return (%)']) || 0,
                     Conclusion: d.Conclusion || '',
