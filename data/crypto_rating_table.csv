@@ -327,3 +327,5 @@ ELF/BUSD,0.34,0.32,Upward Trend,1,Low Risk,Mediate,58.3,2 Risk High,"Quantitativ
 FET/BUSD,0.49,0.49,Upward Trend,1,Low Risk,Unsafe,17.6,2 Risk High,"Quantitative Multi-Factor Signal: Predicted return ~0.0%, Safety 17.6/100, Risk: Low Risk","0.49,0.49,0.49,0.49,0.49",WATCHLIST,0.0,0.0
 LINK/BUSD,14.07,14.07,Upward Trend,1,Low Risk,Unsafe,30.2,2 Risk High,"Quantitative Multi-Factor Signal: Predicted return ~0.0%, Safety 30.2/100, Risk: Low Risk","14.07,14.07,14.07,14.07,14.07",WATCHLIST,0.0,0.0
 INJ/BUSD,25.46,26.38,Upward Trend,1,Mediate Risk,Unsafe,15.0,3 Neutral,"Quantitative Multi-Factor Signal: Predicted return ~3.6%, Safety 15.0/100, Risk: Mediate Risk","25.74,25.9,26.06,26.22,26.38",WATCHLIST,1.2,3.6
+IOTA/USDT,0.09,0.09,Downward Trend,-1,High Risk,Unsafe,-16.6,2 Risk High,"Quantitative Multi-Factor Signal: Predicted return ~0.0%, Safety -16.6/100, Risk: High Risk","0.09,0.09,0.09,0.09,0.09",WATCHLIST,0.0,0.0
+ZBT/USDT,0.11,0.1,Unknown,0,High Risk,Unsafe,-20.5,2 Risk High,"Quantitative Multi-Factor Signal: Predicted return ~-7.2%, Safety -20.5/100, Risk: High Risk","0.1,0.1,0.1,0.1,0.1",UNDERWEIGHT,-2.4,-7.2
