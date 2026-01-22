@@ -13,6 +13,93 @@ th, td{padding:10px; text-align:center; font-size:13px; border-bottom:1px solid 
 th{background:#1f2430; cursor:pointer;}
 tr:hover{background:#1d2230;}
 
+
+/* ===== Top Navigation ===== */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #0b0e14;
+    padding: 12px 20px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #1f2430;
+}
+
+.top-nav .brand {
+    font-size: 18px;
+    font-weight: bold;
+    color: #00ff9c;
+}
+
+.top-nav .nav-link {
+    color: #00ff9c;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 6px 14px;
+    border-radius: 6px;
+    background: #161a22;
+}
+
+.top-nav .nav-link:hover {
+    background: #1f2430;
+}
+
+
+/* ===== Insight Cards ===== */
+.insight-row {
+    display: flex;
+    gap: 16px;
+    margin: 20px 0 30px;
+    flex-wrap: wrap; /* 小屏自动换行 */
+}
+
+.insight-card {
+    flex: 1 1 280px;
+    max-width: 420px;   /* ✅ 新增：限制最大宽度 */
+    background: #161a22;
+    border-radius: 12px;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border: 1px solid #1f2430;
+}
+
+.insight-row {
+    display: flex;
+    gap: 16px;
+    margin: 20px 0 30px;
+    flex-wrap: wrap;
+    justify-content: center;  /* ✅ 新增 */
+}
+
+
+.insight-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 18px rgba(0,255,156,0.15);
+    border-color: #00ff9c;
+}
+
+.insight-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #00ff9c;
+}
+
+.insight-desc {
+    font-size: 13px;
+    opacity: 0.9;
+    margin-bottom: 10px;
+}
+
+.insight-meta {
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.4;
+}
+
+
+
 /* Signal colors */
 .signal-ATTENTION{color:#00ff9c; font-weight:bold;}
 .signal-UNDERWEIGHT{color:#ff5c5c; font-weight:bold;}
@@ -41,6 +128,29 @@ tr:hover{background:#1d2230;}
 .trend-up::after{content:" ▲"; color:#00ff9c;}
 .trend-down::after{content:" ▼"; color:#ff5c5c;}
 .trend-flat::after{content:" ●"; color:#aaa;}
+
+
+/* ===== Safety Level ===== */
+.safe-Safe { color:#00ff9c; font-weight:bold; }
+.safe-Mediate { color:#ffd166; font-weight:bold; }
+.safe-Caution { color:#ff5c5c; font-weight:bold; }
+
+/* ===== Category Tag ===== */
+.tag {
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: bold;
+  background:#2a2f3a;
+  color:#fff;
+}
+
+/* ===== Maturity ===== */
+.maturity-MATURE { color:#7fff00; }
+.maturity-EARLY { color:#ffd166; }
+
+
+
 
 @media(max-width:800px){table{display:block;overflow-x:auto;}}
 
@@ -72,7 +182,38 @@ footer {
 </head>
 <body>
 
+<div class="top-nav">
+    <span class="brand">📊 Cryptobex</span>
+    <a href="report.html" class="nav-link">Insights</a>
+</div>
+
 <h1>📊 Cryptobex Rank</h1>
+
+<div class="insight-row">
+    <div class="insight-card" onclick="location.href='report.html'">
+        <div class="insight-title">📘 Insights</div>
+        <div class="insight-desc">
+            Quantitative outlook & Insights
+        </div>
+        <div class="insight-meta">
+            • Market Overview <br>
+            • Analytic Discussion
+        </div>
+    </div>
+
+    <div class="insight-card" onclick="location.href='contactus.html'">
+        <div class="insight-title">📘 Contact Us</div>
+        <div class="insight-desc">
+            Contact and Reach Out for More Opportunities
+        </div>
+        <div class="insight-meta">
+            • Consultation<br>
+            • Customised Service
+        </div>
+    </div>
+
+
+</div>
 
 <div class="controls">
     <input type="text" id="search" placeholder="Search Symbol (e.g. ADA)" />
@@ -87,17 +228,29 @@ footer {
 <table>
 <thead>
 <tr>
-    <th onclick="sortTable('Symbol')">Symbol</th>
-    <th onclick="sortTable('Current')">Price</th>
-    <th onclick="sortTable('Trend')">Trend</th>
-    <th onclick="sortTable('Composite')">Composite</th>
-    <th onclick="sortTable('Safety')">Safety</th>
-    <th onclick="sortTable('Signal')">Signal</th>
-    <th onclick="sortTable('InvestmentRating')">Investment Rating</th>
-    <th onclick="sortTable('Risk')">Risk</th>
-    <th onclick="sortTable('SignalQuality')">Signal Quality</th>
-    <th onclick="sortTable('Return')">Return %</th>
+  <th onclick="sortTable('Symbol')">Symbol</th>
+  <th onclick="sortTable('Maturity')">Maturity</th>
+  <th onclick="sortTable('Current')">Price</th>
+  <th onclick="sortTable('Trend')">Trend</th>
+  <th onclick="sortTable('Sentiment')">Sentiment</th>
+  <th onclick="sortTable('Composite')">Composite</th>
+  <th onclick="sortTable('Healthy')">Healthy</th>
+  <th onclick="sortTable('Belief')">Belief</th>
+  <th onclick="sortTable('Quantiment')">Quantiment</th>
+  <th onclick="sortTable('SafetyScore')">Safety</th>
+  <th onclick="sortTable('Signal')">Signal</th>
+  <th onclick="sortTable('InvestmentRating')">Invest Rating</th>
+  <th onclick="sortTable('Risk')">Risk</th>
+  <th onclick="sortTable('ReferenceRating')">Reference Rating</th>
+  <th onclick="sortTable('Return')">Return %</th>
+  <th onclick="sortTable('Strategy')">Strategy</th>
+
 </tr>
+
+
+
+
+
 </thead>
 <tbody id="tableBody"></tbody>
 </table>
@@ -180,22 +333,59 @@ function loadCSV() {
         complete: function(results) {
             data = results.data
                 .filter(d => d.Symbol)
+                
                 .map(d => ({
                     Symbol: d.Symbol,
-                    Current: parseFloat(d['Current Price']) || 0,
-                    Trend: (d.Trend === 'Upward Trend') ? 'up' :
-                           (d.Trend === 'Downward Trend') ? 'down' : 'flat',
-                    Composite: parseFloat(d['Composite Score']) || 0,
-                    Safety: parseFloat(d['Safety Score']) || 0,
-                    Signal: d.Signal || 'WATCHLIST',
-                    InvestmentRating: d['Investment Rating'] || '',
-                    Risk: d.Risk || '',
-                    SignalQuality: parseFloat((d['Signal Quality Score'] || d['SignalQualityScore'] || 0)) || 0,
+                    Maturity: d.Maturity || 'MATURE',
 
-                    Return: parseFloat(d['Expected Return (%)']) || 0,
-                    Conclusion: d.Conclusion || '',
-                    FuturePrices: d['Future Prices'] || ''
+                    Current: Number(d['Current Price']) || 0,
+
+                    Trend:
+                        d.Trend?.toLowerCase().includes('up') ? 'up' :
+                        d.Trend?.toLowerCase().includes('down') ? 'down' : 'flat',
+
+
+                    Strategy: d.StrategicSignal || '',  // 确保字段名和 CSV 对应
+                    ReferenceRating: (() => {
+                    const r = (d['Reference Rating'] || '').toString().trim();
+                    const map = { 'A+':5, 'A':4, 'B+':3, 'B':2, 'C':1 };
+                    return map[r] || 0;
+                    })(),
+
+
+                    Composite: Number(d['Composite Score']) || 0,
+                    Healthy: Number(d['Healthy Score']) || 0,
+
+                    Belief: Number(d['Belief Quality']) || 0,
+                    Quantiment: Number(d['Quantiment (%)']) || 0,
+
+                    SafetyScore: Number(d['Safety Score']) || 0,
+                    SafetyLevel: d.Safety || 'Caution',
+
+                    Signal: d['Category signal'] || d.Signal || 'WATCHLIST',
+
+                    InvestmentRating: d['Reference Rating'] || '',
+                    ReferenceState: d['Reference State'] || '',
+
+                    Risk: d.Risk || '',
+
+                    ReferenceRating: (() => {
+                    const r = (d['Reference Rating'] || '').toString().trim();
+                    const map = { 'A+':5, 'A':4, 'B+':3, 'B':2, 'C':1 };
+                    return map[r] || 0;
+                    })(),
+
+
+                    Return: Number(d['Reference Return (%)'] || d['Expected Return (%)']) || 0,
+
+                    Strategy: d['Strategic Signal'] || '',
+
+                    Conclusion: d.Summary || d.Conclusion || '',
+                    FuturePrices: String(d['Reference Prices'] || d['Future Prices'] || ''),
+                    Sentiment: d.Sentiment || ''   // <-- 新增
                 }));
+
+                
             renderTable();
         }
     });
@@ -216,25 +406,73 @@ function renderTable() {
         tr.dataset.future = escapeHtml(d.FuturePrices);
 
         tr.innerHTML = `
-            <td>
-              <a href="coinTrend.html?symbol=${encodeURIComponent(d.Symbol.replace('/', '_'))}"
-                 style="color:#00ff9c; text-decoration:none; font-weight:bold;">
-                 ${escapeHtml(d.Symbol)}
-              </a>
-            </td>
-            <td>${d.Current}</td>
-            <td class="trend-${d.Trend}">${d.Trend}</td>
-            <td>${d.Composite}</td>
-            <td>${formatScore(d.Safety)}</td>
-            <td class="signal-${d.Signal}">${escapeHtml(d.Signal)}</td>
-            <td>${formatRating(d.InvestmentRating)}</td>
-            <td>${formatRisk(d.Risk)}</td>
-            <td>${formatScore(d.SignalQuality)}</td>
-            <td>${d.Return}%</td>
-        `;
+                <td>
+                <a href="coinTrend.html?symbol=${encodeURIComponent(d.Symbol.replace('/', '_'))}"
+                    style="color:#00ff9c;font-weight:bold;text-decoration:none">
+                    ${escapeHtml(d.Symbol)}
+                </a>
+                </td>
+
+                <td class="maturity-${d.Maturity}">${d.Maturity}</td>
+
+                <td>${d.Current.toFixed(2)}</td>
+
+                <td class="trend-${d.Trend}">${d.Trend}</td>
+                <td>${escapeHtml(d.Sentiment)}</td>
+
+                <td>${formatScore(d.Composite)}</td>
+
+                <td>${formatScore(d.Healthy)}</td>
+
+                <td>${formatScore(d.Belief)}</td>
+
+                <td>${formatScore(d.Quantiment)}</td>
+
+                
+
+
+                <td>
+                <div class="safe-${d.SafetyLevel}">
+                    ${formatScore(d.SafetyScore)}
+                    ${d.SafetyLevel}
+                </div>
+                </td>
+
+                <td class="signal-${d.Signal}">${d.Signal}</td>
+
+                <td>${formatRating(d.InvestmentRating)}</td>
+
+                <td>${formatRisk(d.Risk)}</td>
+
+                <td>${formatReferenceRating(d.ReferenceRating)}</td>
+
+
+                <td>${d.Return.toFixed(2)}%</td>
+
+                <td>
+                <span class="tag">${escapeHtml(d.Strategy)}</span>
+                </td>
+                `;
+
         body.appendChild(tr);
     });
 }
+
+function formatReferenceRating(score){
+    const map = {
+        5:{label:'A+', color:'#00ff9c'},
+        4:{label:'A',  color:'#7fff00'},
+        3:{label:'B+', color:'#ffd166'},
+        2:{label:'B',  color:'#ff9f1c'},
+        1:{label:'C',  color:'#ff5c5c'},
+        0:{label:'-',  color:'#666'}
+    };
+    const r = map[score] || map[0];
+    const stars = '★'.repeat(score) + '☆'.repeat(5-score);
+    return `<span style="color:${r.color};font-weight:bold">${r.label} ${stars}</span>`;
+}
+
+
 
 function sortTable(key) {
     if (currentSort.key === key) currentSort.asc = !currentSort.asc;
@@ -242,7 +480,10 @@ function sortTable(key) {
 
     const trendOrder = { up: 3, flat: 2, down: 1 };
     const signalOrder = { 'ATTENTION': 3, 'WATCHLIST': 2, 'UNDERWEIGHT': 1 };
-    const riskMap = {'low':3,'medium':2,'mediate':2,'high':1};
+    
+    const riskMap = { low:3, medium:2, mediate:2, high:1 };
+    const maturityMap = { MATURE:3, GROWTH:2, EARLY:1 };
+
 
     data.sort((a,b)=>{
         let va = a[key], vb = b[key];
@@ -261,6 +502,22 @@ function sortTable(key) {
             va = riskMap[va] || 0;
             vb = riskMap[vb] || 0;
         }
+
+        else if(key === 'ReferenceRating'){
+        va = Number(va) || 0;
+        vb = Number(vb) || 0;
+        }
+        else if(key === 'Strategy'){ 
+            va = (va||'').toLowerCase();
+            vb = (vb||'').toLowerCase();
+        }
+
+        else if(key === 'Sentiment') {
+            va = (va||'').toLowerCase();
+            vb = (vb||'').toLowerCase();
+        }
+
+
 
         if(typeof va==='number' && typeof vb==='number') return currentSort.asc ? va-vb : vb-va;
         return currentSort.asc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));

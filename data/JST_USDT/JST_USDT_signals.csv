@@ -1,2 +1,2 @@
-Signal,Composite Score,Signal Quality Score,Expected Return (%),Trend
-ATTENTION,3.3,90,9.9,Upward Trend
+Signal,Composite Score,Signal Quality Score,BPI (%),BPI State,Reference Return (%),Trend
+ATTENTION,3.31,90,52.38,Neutral,0.63,Upward

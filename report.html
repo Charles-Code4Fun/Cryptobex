@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cryptobex Research Report</title>
+
+<style>
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #0e1117;
+    color: #e6e6e6;
+    margin: 0;
+    padding: 0;
+}
+
+/* ===== Header / Footer ===== */
+.header, .footer {
+    background: #0b0e14;
+    padding: 14px 20px;
+    border-bottom: 1px solid #1f2430;
+}
+
+.footer {
+    border-top: 1px solid #1f2430;
+    border-bottom: none;
+    margin-top: 40px;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    font-size: 18px;
+    font-weight: bold;
+    color: #00ff9c;
+}
+
+.home-link {
+    color: #00ff9c;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: #161a22;
+}
+
+.home-link:hover {
+    background: #1f2430;
+}
+
+/* ===== Main Content ===== */
+.container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.report-card {
+    background: #161a22;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+.report-title {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.report-subtitle {
+    font-size: 13px;
+    color: #aaa;
+    margin-bottom: 25px;
+}
+
+/* ===== Report Text ===== */
+.report-content {
+    font-family: "Courier New", Consolas, monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    white-space: pre-wrap;      /* 保留换行 */
+    word-break: break-word;
+    color: #e6e6e6;
+}
+
+/* ===== Loading ===== */
+.loading {
+    color: #ffd166;
+    font-style: italic;
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 800px) {
+    .report-card {
+        padding: 20px;
+    }
+    .report-title {
+        font-size: 22px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== Header ===== -->
+<div class="header">
+    <div class="nav">
+        <div class="brand">📘 Cryptobex Research</div>
+        <a class="home-link" href="index.html">← Back to Home</a>
+    </div>
+</div>
+
+<!-- ===== Main ===== -->
+<div class="container">
+    <div class="report-card">
+        <div class="report-title">Quantitative Insights</div>
+        <div class="report-subtitle">
+            Researcher Bella, John, David 
+        </div>
+
+        <div id="reportContent" class="report-content loading">
+            Loading report...
+        </div>
+    </div>
+</div>
+
+<!-- ===== Footer ===== -->
+<div class="footer">
+    <div class="nav">
+        <div style="font-size:12px;color:#aaa;">
+            ⚠️ For research & informational purposes only. Not financial advice.
+        </div>
+        <a class="home-link" href="index.html">← Back to Home</a>
+    </div>
+</div>
+
+<script>
+fetch("data/report.txt")
+    .then(res => {
+        if (!res.ok) throw new Error("Failed to load report.txt");
+        return res.text();
+    })
+    .then(text => {
+        const el = document.getElementById("reportContent");
+        el.classList.remove("loading");
+        el.textContent = text;
+    })
+    .catch(err => {
+        const el = document.getElementById("reportContent");
+        el.classList.remove("loading");
+        el.style.color = "#ff5c5c";
+        el.textContent = "Error loading report.txt\n\n" + err.message;
+    });
+</script>
+
+</body>
+</html>

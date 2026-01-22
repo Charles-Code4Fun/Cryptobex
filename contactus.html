@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Contact Us | Cybex</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background:#0e1117;
+    color:#e6e6e6;
+    margin:0;
+    padding:0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 30px;
+}
+
+/* ===== Card ===== */
+.contact-card {
+    background: #161a22;
+    border-radius: 14px;
+    padding: 26px;
+    border: 1px solid #1f2430;
+}
+
+/* ===== Form ===== */
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: #aaa;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    background: #1c1f26;
+    color: #fff;
+    font-size: 14px;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* ===== Button ===== */
+button {
+    background: #00ff9c;
+    color: #0e1117;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background: #7fffcc;
+}
+
+/* ===== Footer / Back ===== */
+.back-home {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.back-home a {
+    color: #00ff9c;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.back-home a:hover {
+    text-decoration: underline;
+}
+
+/* ===== Info Box ===== */
+.contact-info {
+    margin-top: 20px;
+    font-size: 13px;
+    color: #aaa;
+    line-height: 1.6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>📬 Contact Us</h1>
+    <div class="subtitle">
+        We’d love to hear from you. Reach out for collaboration, research, or business inquiries.
+    </div>
+
+    <div class="contact-card">
+        <!-- ⚠️ mailto 方式 -->
+        <form action="mailto:info@cybexz.com" method="post" enctype="text/plain">
+            
+            <div class="form-group">
+                <label for="name">Full Name *</label>
+                <input type="text" id="name" name="Name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="Email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="Phone">
+            </div>
+
+            <div class="form-group">
+                <label for="message">Message *</label>
+                <textarea id="message" name="Message" required></textarea>
+            </div>
+
+            <button type="submit">Send Message</button>
+        </form>
+
+        <div class="contact-info">
+            📧 Email: <strong>info@cybexz.com</strong><br>
+            ⏱ We typically respond within 1–2 business days.
+        </div>
+    </div>
+
+    <div class="back-home">
+        <a href="index.html">← Back to Home</a>
+    </div>
+</div>
+
+</body>
+</html>

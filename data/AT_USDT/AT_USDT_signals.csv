@@ -1,2 +1,2 @@
-Signal,Composite Score,Signal Quality Score,Expected Return (%),Trend
-WATCHLIST,-1.1,35,-3.3,Unknown
+Signal,Composite Score,Signal Quality Score,BPI (%),BPI State,Reference Return (%),Trend
+WATCHLIST,-1.1,10,50.0,Low Confidence,-2.2,Unknown

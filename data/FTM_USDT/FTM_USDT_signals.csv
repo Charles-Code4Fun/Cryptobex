@@ -1,2 +1,2 @@
-Signal,Composite Score,Signal Quality Score,Expected Return (%),Trend
-WATCHLIST,0.0,35,0.0,Downward Trend
+Signal,Composite Score,Signal Quality Score,BPI (%),BPI State,Reference Return (%),Trend
+WATCHLIST,0.0,35,50.11,Neutral,-1.36,Downward
