@@ -98,6 +98,33 @@ tr:hover{background:#1d2230;}
     line-height: 1.4;
 }
 
+/* ===== Invest Class ===== */
+/* ===== Invest Class ===== */
+.invest-Attention {
+    color: #00ff9c;
+    font-weight: bold;
+}
+
+.invest-Potential {
+    color: #7fff00;
+    font-weight: bold;
+}
+
+.invest-Watchlist {
+    color: #ffd166;
+    font-weight: bold;
+}
+
+.invest-Caution {
+    color: #ff9f1c;
+    font-weight: bold;
+}
+
+.invest-Underweight {
+    color: #ff5c5c;
+    font-weight: bold;
+}
+
 
 
 /* Signal colors */
@@ -239,7 +266,7 @@ footer {
   <th onclick="sortTable('Quantiment')">Quantiment</th>
   <th onclick="sortTable('SafetyScore')">Safety</th>
   <th onclick="sortTable('Signal')">Signal</th>
-  <th onclick="sortTable('InvestmentRating')">Invest Rating</th>
+  <th onclick="sortTable('InvestClass')">Invest Class</th>
   <th onclick="sortTable('Risk')">Risk</th>
   <th onclick="sortTable('ReferenceRating')">Reference Rating</th>
   <th onclick="sortTable('Return')">Return %</th>
@@ -364,7 +391,7 @@ function loadCSV() {
 
                     Signal: d['Category signal'] || d.Signal || 'WATCHLIST',
 
-                    InvestmentRating: d['Reference Rating'] || '',
+                    InvestClass: d['Reference State'] || '',
                     ReferenceState: d['Reference State'] || '',
 
                     Risk: d.Risk || '',
@@ -440,7 +467,7 @@ function renderTable() {
 
                 <td class="signal-${d.Signal}">${d.Signal}</td>
 
-                <td>${formatRating(d.InvestmentRating)}</td>
+                <td class="invest-${d.InvestClass}">${d.InvestClass}</td>
 
                 <td>${formatRisk(d.Risk)}</td>
 
@@ -515,6 +542,18 @@ function sortTable(key) {
         else if(key === 'Sentiment') {
             va = (va||'').toLowerCase();
             vb = (vb||'').toLowerCase();
+        }
+
+        else if (key === 'InvestClass') {
+            const classOrder = {
+                'Attention': 5,
+                'Potential': 4,
+                'Watchlist': 3,
+                'Caution': 2,
+                'Underweight': 1
+            };
+            va = classOrder[va] || 0;
+            vb = classOrder[vb] || 0;
         }
 
 
