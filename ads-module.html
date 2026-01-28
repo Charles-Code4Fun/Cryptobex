@@ -1,0 +1,82 @@
+<!-- ads-module.html -->
+<div class="ad-row">
+    <!-- 广告卡片示例 1 -->
+    <div class="ad-card" data-ad-slot="1111111111">
+        <div class="ad-wrapper">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-4853280371546570"
+                 data-ad-slot="1111111111"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+        </div>
+    </div>
+
+    <!-- 广告卡片示例 2 -->
+    <div class="ad-card" data-ad-slot="2222222222">
+        <div class="ad-wrapper">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-4853280371546570"
+                 data-ad-slot="2222222222"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+        </div>
+    </div>
+
+    <!-- 广告卡片示例 3 -->
+    <div class="ad-card" data-ad-slot="3333333333">
+        <div class="ad-wrapper">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-4853280371546570"
+                 data-ad-slot="3333333333"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+        </div>
+    </div>
+</div>
+
+<style>
+/* 横向广告条容器 */
+.ad-row {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 10px 0;
+}
+
+/* 每个广告卡片 */
+.ad-card {
+    flex: 0 0 auto;
+    min-width: 250px;
+    max-width: 280px;
+    background: #1b1f2a;
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 广告外层容器，控制比例 */
+.ad-wrapper {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 移动端自适应 */
+@media (max-width: 600px) {
+    .ad-card {
+        min-width: 200px;
+        padding: 6px;
+    }
+    .ad-wrapper {
+        aspect-ratio: 4 / 3;
+    }
+}
+</style>
