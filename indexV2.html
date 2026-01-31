@@ -261,50 +261,7 @@ footer {
         <option value="UNDERWEIGHT">UNDERWEIGHT</option>
         <option value="WATCHLIST">WATCHLIST</option>
     </select>
-
-
-    <!-- ===== 新增：多维过滤 ===== -->
-    <select id="maturityFilter">
-    <option value="">All Maturity</option>
-    <option value="MATURE">MATURE</option>
-    <option value="EARLY">EARLY</option>
-    </select>
-
-    <select id="investFilter">
-    <option value="">All Invest Class</option>
-    <option value="Attention">Attention</option>
-    <option value="Potential">Potential</option>
-    <option value="Watchlist">Watchlist</option>
-    <option value="Caution">Caution</option>
-    <option value="Underweight">Underweight</option>
-    </select>
-
-    <select id="riskFilter">
-    <option value="">All Risk</option>
-    <option value="low">Low</option>
-    <option value="medium">Medium</option>
-    <option value="high">High</option>
-    </select>
-
-    <select id="safetyFilter">
-    <option value="">All Safety</option>
-    <option value="Safe">Safe</option>
-    <option value="Mediate">Mediate</option>
-    <option value="Caution">Caution</option>
-    </select>
-
-    <input type="number" id="minComposite" placeholder="Min Composite" style="width:120px">
-    <!-- <input type="number" id="minReturn" placeholder="Min Return %" style="width:120px"> -->
-    <input type="number" id="minHealthy" placeholder="Min Healthy" style="width:120px">
-    <!-- ===== NEW: Quantiment / Safety Score Filters ===== -->
-    <input type="number" id="minQuantiment" placeholder="Min Quantiment" style="width:140px">
-    <input type="number" id="minSafetyScore" placeholder="Min Safety Score" style="width:150px">
-
 </div>
-
-<div id="activeFilters" style="margin:8px 0;font-size:12px;color:#aaa;"></div>
-
-
 
 <table>
 <thead>
@@ -472,90 +429,15 @@ function loadCSV() {
     });
 }
 
-
-
-/* ===== NEW FILTER LOGIC（增量，不替换任何原函数）===== */
-function getFilters(){
-  return {
-    search: document.getElementById("search").value.toUpperCase(),
-    signal: document.getElementById("signalFilter").value,
-    maturity: document.getElementById("maturityFilter").value,
-    invest: document.getElementById("investFilter").value,
-    risk: document.getElementById("riskFilter").value,
-    safety: document.getElementById("safetyFilter").value,
-    minComposite: Number(document.getElementById("minComposite").value) || null,
-    // minReturn: Number(document.getElementById("minReturn").value) || null,
-    minHealthy: Number(document.getElementById("minHealthy").value) || null,
-    minQuantiment: Number(document.getElementById("minQuantiment").value) || null,
-    minSafetyScore: Number(document.getElementById("minSafetyScore").value) || null
-
-
-  };
-}
-
-function applyFilters(row, f){
-  if(f.search && !row.Symbol.toUpperCase().includes(f.search)) return false;
-  if(f.signal && row.Signal !== f.signal) return false;
-  if(f.maturity && row.Maturity !== f.maturity) return false;
-  if(f.invest && row.InvestClass !== f.invest) return false;
-  if(f.risk && !row.Risk.toLowerCase().includes(f.risk)) return false;
-  if(f.safety && row.SafetyLevel !== f.safety) return false;
-  if(f.minComposite !== null && row.Composite < f.minComposite) return false;
-  //   if(f.minReturn !== null && row.Return < f.minReturn) return false;
-  if(f.minHealthy !== null && row.Healthy < f.minHealthy) return false;
-  if(f.minQuantiment !== null && row.Quantiment < f.minQuantiment) return false;
-  if(f.minSafetyScore !== null && row.SafetyScore < f.minSafetyScore) return false;
-
-
-
-  return true;
-}
-
-
-function renderActiveFilters(filters){
-  const box = document.getElementById("activeFilters");
-  const items = [];
-
-  if(filters.minHealthy !== null)
-    items.push(`Healthy ≥ ${filters.minHealthy}`);
-
-  if(filters.minComposite !== null)
-    items.push(`Composite ≥ ${filters.minComposite}`);
-
-  if(filters.minQuantiment !== null)
-    items.push(`Quantiment ≥ ${filters.minQuantiment}`);
-
-  if(filters.minSafetyScore !== null)
-    items.push(`Safety Score ≥ ${filters.minSafetyScore}`);
-
-  if(filters.signal)
-    items.push(`Signal = ${filters.signal}`);
-
-  if(filters.invest)
-    items.push(`Invest = ${filters.invest}`);
-
-  if(filters.risk)
-    items.push(`Risk = ${filters.risk}`);
-
-  box.innerHTML = items.length
-    ? `Active Filters: ${items.join(" · ")}`
-    : "";
-}
-
-
 function renderTable() {
     const body = document.getElementById("tableBody");
     const search = (document.getElementById("search").value || "").toUpperCase();
     const signalF = document.getElementById("signalFilter").value;
     body.innerHTML = "";
 
-
-    const filters = getFilters();
-    renderActiveFilters(filters);
-
-
     data
-    .filter(d => applyFilters(d, filters))
+    .filter(d => (d.Symbol || "").toUpperCase().includes(search) &&
+                 (signalF === "" || d.Signal === signalF))
     .forEach(d => {
         const tr = document.createElement("tr");
         tr.dataset.conclusion = escapeHtml(d.Conclusion);
@@ -707,14 +589,8 @@ document.getElementById("tableBody").addEventListener("mousemove", function(e){
 });
 
 document.getElementById("tableBody").addEventListener("mouseleave", ()=>tooltip.style.display="none");
-// document.getElementById("search").addEventListener("input", renderTable);
-// document.getElementById("signalFilter").addEventListener("change", renderTable);
-/* ===== 新增：所有 filter 统一触发渲染 ===== */
-document
-  .querySelectorAll(".controls input, .controls select")
-  .forEach(el => el.addEventListener("input", renderTable));
-
-
+document.getElementById("search").addEventListener("input", renderTable);
+document.getElementById("signalFilter").addEventListener("change", renderTable);
 
 loadCSV();
 </script>
