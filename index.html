@@ -19,8 +19,32 @@ th{background:#1f2430; cursor:pointer;}
 tr:hover{background:#1d2230;}
 
 
+#google_translate_element {
+    font-size: 12px;
+}
+.goog-te-gadget {
+    color: #00ff9c !important;
+}
+.goog-te-combo {
+    background: #161a22;
+    color: #fff;
+    border: 1px solid #1f2430;
+    border-radius: 6px;
+    padding: 4px 6px;
+}
+.goog-logo-link,
+.goog-te-gadget span {
+    display: none !important;
+}
 
 
+.lang-switch {
+    font-size: 12px;
+    color: #00ff9c;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
 
 /* ===== Top Navigation ===== */
 .top-nav {
@@ -221,8 +245,19 @@ footer {
 
 <div class="top-nav">
     <span class="brand">📊 Cryptobex</span>
-    <a href="report.html" class="nav-link">Insights</a>
+
+    <div style="display:flex; gap:14px; align-items:center;">
+        <!-- Language Switch -->
+        <div class="lang-switch">
+            🌐 Language:
+            <span id="google_translate_element"></span>
+        </div>
+
+        <a href="report.html" class="nav-link">Insights</a>
+    </div>
 </div>
+
+
 
 <h1>📊 Cryptobex Rank</h1>
 
@@ -326,10 +361,6 @@ footer {
   <th onclick="sortTable('Strategy')">Strategy</th>
 
 </tr>
-
-
-
-
 
 </thead>
 <tbody id="tableBody"></tbody>
@@ -717,5 +748,32 @@ document
 
 loadCSV();
 </script>
+
+<!-- ===== Google Translate Script ===== -->
+<script type="text/javascript">
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+        {
+            pageLanguage: 'en',
+            includedLanguages: 'en,zh-CN,th,zh-TW,ja,ko,fr,de,es,it,pt,ru,ar',
+            layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL,
+            autoDisplay: false
+        },
+        'google_translate_element'
+    );
+}
+</script>
+
+
+
+
+
+<script
+    type="text/javascript"
+    src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+
+
+
 </body>
 </html>
