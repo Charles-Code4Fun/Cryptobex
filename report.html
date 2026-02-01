@@ -5,10 +5,29 @@
     <title>Cryptobex Research Report</title>
 
     <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4853280371546570" crossorigin="anonymous"></script>
+    <script async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4853280371546570"
+        crossorigin="anonymous"></script>
+
     <script async custom-element="amp-auto-ads"
-            src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
+
+    <!-- ================= Google Translate ================= -->
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+                {
+                    pageLanguage: 'en',
+                    includedLanguages: 'en,zh-CN,zh-TW,ja,ko,th,vi,id,fr,de,es,ru,pt,ar,hi',
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                    autoDisplay: false
+                },
+                'google_translate_element'
+            );
+        }
     </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -16,6 +35,7 @@
             color: #e6e6e6;
             margin: 0;
             padding: 0;
+            top: 0 !important;
         }
 
         /* ===== Header / Footer ===== */
@@ -33,6 +53,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 12px;
         }
         .brand {
             font-size: 18px;
@@ -49,6 +70,28 @@
         }
         .home-link:hover {
             background: #1f2430;
+        }
+
+        /* ===== Google Translate widget styling ===== */
+        #google_translate_element {
+            background: #161a22;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .goog-te-gadget {
+            color: #ccc !important;
+            font-size: 12px !important;
+        }
+        .goog-te-gadget select {
+            background: #0e1117;
+            color: #e6e6e6;
+            border: 1px solid #1f2430;
+            border-radius: 4px;
+            padding: 4px;
+        }
+        .goog-logo-link,
+        .goog-te-banner-frame.skiptranslate {
+            display: none !important;
         }
 
         /* ===== Main Content ===== */
@@ -86,7 +129,7 @@
             font-style: italic;
         }
 
-        /* ===== 广告模块样式 ===== */
+        /* ===== Ads ===== */
         .ad-row {
             display: flex;
             gap: 15px;
@@ -105,35 +148,25 @@
             align-items: center;
             justify-content: center;
         }
-        .ad-wrapper {
-            width: 100%;
-            aspect-ratio: 4 / 3;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
 
-        /* ===== Mobile ===== */
         @media (max-width: 800px) {
             .report-card { padding: 20px; }
             .report-title { font-size: 22px; }
-            .ad-card { min-width: 200px; padding: 6px; }
         }
     </style>
 </head>
 
 <body>
-<amp-auto-ads type="adsense"
-        data-ad-client="ca-pub-4853280371546570">
-</amp-auto-ads>
+
+<amp-auto-ads type="adsense" data-ad-client="ca-pub-4853280371546570"></amp-auto-ads>
 
 <!-- ===== Header ===== -->
 <div class="header">
     <div class="nav">
         <div class="brand">📘 Cryptobex Research</div>
 
-        <!-- Header 广告占位 -->
-        <div class="ad-slot" id="ad-slot-header"></div>
+        <!-- Language selector -->
+        <div id="google_translate_element"></div>
 
         <a class="home-link" href="index.html">← Back to Home</a>
     </div>
@@ -145,10 +178,11 @@
         <div class="report-title">Quantitative Insights</div>
         <div class="report-subtitle">Cybetrix Research Team</div>
 
-        <!-- Main 广告占位 -->
         <div class="ad-slot" id="ad-slot-main"></div>
 
-        <div id="reportContent" class="report-content loading">Loading report...</div>
+        <div id="reportContent" class="report-content loading">
+            Loading report...
+        </div>
     </div>
 </div>
 
@@ -163,48 +197,41 @@
     </div>
 </div>
 
+<!-- ================= Ads loader ================= -->
 <script>
-/* ===== 动态加载广告模块 ===== */
 fetch("ads-module.html")
     .then(res => res.text())
     .then(html => {
-        const adSlots = document.querySelectorAll(".ad-slot");
-        adSlots.forEach((slot, slotIndex) => {
+        document.querySelectorAll(".ad-slot").forEach(slot => {
             slot.innerHTML = html;
-
-            const adCards = slot.querySelectorAll(".ad-card");
-            adCards.forEach((card, index) => {
-                const ins = card.querySelector("ins.adsbygoogle");
-                if (ins) {
-                    // 延迟初始化，避免渲染冲突
-                    setTimeout(() => {
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                    }, index * 500 + slotIndex * 1000);
-                }
+            slot.querySelectorAll("ins.adsbygoogle").forEach(ins => {
+                (adsbygoogle = window.adsbygoogle || []).push({});
             });
         });
     })
-    .catch(err => console.error("Failed to load ads module:", err));
+    .catch(err => console.error("Ads load failed:", err));
 </script>
 
+<!-- ================= Report loader (关键修复点) ================= -->
 <script>
-/* ===== 动态加载报告内容 ===== */
-fetch("data/report.txt")
-    .then(res => {
-        if (!res.ok) throw new Error("Failed to load report.txt");
-        return res.text();
-    })
-    .then(text => {
-        const el = document.getElementById("reportContent");
-        el.classList.remove("loading");
-        el.textContent = text;
-    })
-    .catch(err => {
-        const el = document.getElementById("reportContent");
-        el.classList.remove("loading");
-        el.style.color = "#ff5c5c";
-        el.textContent = "Error loading report.txt\n\n" + err.message;
-    });
+window.addEventListener("load", () => {
+    fetch("data/report.txt")
+        .then(res => {
+            if (!res.ok) throw new Error("Failed to load report.txt");
+            return res.text();
+        })
+        .then(text => {
+            const el = document.getElementById("reportContent");
+            el.classList.remove("loading");
+            el.textContent = text;
+        })
+        .catch(err => {
+            const el = document.getElementById("reportContent");
+            el.classList.remove("loading");
+            el.style.color = "#ff5c5c";
+            el.textContent = "Error loading report.txt\n\n" + err.message;
+        });
+});
 </script>
 
 </body>
