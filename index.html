@@ -334,6 +334,12 @@ footer {
     <input type="number" id="minQuantiment" placeholder="Min Quantiment" style="width:140px">
     <input type="number" id="minSafetyScore" placeholder="Min Safety Score" style="width:150px">
 
+
+    <!-- Sharp and Sortino -->
+    <input type="number" id="minSharpe" placeholder="Min Sharpe" step="0.1" style="width:110px">
+    <!-- <input type="number" id="minSortino" placeholder="Min Sortino" step="0.1" style="width:110px"> -->
+
+
 </div>
 
 <div id="activeFilters" style="margin:8px 0;font-size:12px;color:#aaa;"></div>
@@ -353,6 +359,10 @@ footer {
   <th onclick="sortTable('Belief')">Belief</th>
   <th onclick="sortTable('Quantiment')">Quantiment</th>
   <th onclick="sortTable('SafetyScore')">Safety</th>
+
+  <th onclick="sortTable('Sharpe')">Sharpe</th>
+  <!-- <th onclick="sortTable('Sortino')">Safety</th> -->
+
   <th onclick="sortTable('Signal')">Signal</th>
   <th onclick="sortTable('InvestClass')">Invest Class</th>
   <th onclick="sortTable('Risk')">Risk</th>
@@ -464,7 +474,7 @@ function loadCSV() {
                     })(),
 
 
-                    Composite: Number(d['Composite Score']) || 0,
+                    Composite: Number(d['Composite Score']) || 0/10,
                     Healthy: Number(d['Healthy Score']) || 0,
 
                     Belief: Number(d['Belief Quality']) || 0,
@@ -472,6 +482,8 @@ function loadCSV() {
 
                     SafetyScore: Number(d['Safety Score']) || 0,
                     SafetyLevel: d.Safety || 'Caution',
+
+                    Sharpe: Number(d.sharpRatio) || 0,
 
                     Signal: d['Category signal'] || d.Signal || 'WATCHLIST',
 
@@ -517,7 +529,8 @@ function getFilters(){
     // minReturn: Number(document.getElementById("minReturn").value) || null,
     minHealthy: Number(document.getElementById("minHealthy").value) || null,
     minQuantiment: Number(document.getElementById("minQuantiment").value) || null,
-    minSafetyScore: Number(document.getElementById("minSafetyScore").value) || null
+    minSafetyScore: Number(document.getElementById("minSafetyScore").value) || null,
+    minSharpe: Number(document.getElementById("minSharpe").value) || null
 
 
   };
@@ -566,6 +579,9 @@ function renderActiveFilters(filters){
 
   if(filters.risk)
     items.push(`Risk = ${filters.risk}`);
+  
+  if(filters.minSharpe !== null) 
+    items.push(`Sharpe ≥ ${filters.minSharpe}`);
 
   box.innerHTML = items.length
     ? `Active Filters: ${items.join(" · ")}`
@@ -623,6 +639,10 @@ function renderTable() {
                     ${d.SafetyLevel}
                 </div>
                 </td>
+
+
+                
+                <td style="color:${d.Sharpe >= 1 ? '#00ff9c' : d.Sharpe >= 0.5 ? '#ffd166' : '#ff5c5c'}">  ${d.Sharpe.toFixed(2)}</td>
 
                 <td class="signal-${d.Signal}">${d.Signal}</td>
 

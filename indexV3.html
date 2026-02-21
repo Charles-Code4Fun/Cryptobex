@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4853280371546570"
+     crossorigin="anonymous"></script>
+<script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+<meta charset="UTF-8">
+<title>Cryptobex Quantech</title>
+<style>
+body { font-family: Arial; background:#0e1117; color:#e6e6e6; margin:20px;}
+h1{text-align:center; margin-bottom:20px;}
+.controls{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:15px;}
+input, select{padding:8px 10px; border-radius:6px; border:none; outline:none; background:#1c1f26; color:#fff;}
+table{width:100%; border-collapse:collapse; background:#161a22; border-radius:10px; overflow:hidden;}
+th, td{padding:10px; text-align:center; font-size:13px; border-bottom:1px solid #2a2f3a;}
+th{background:#1f2430; cursor:pointer;}
+tr:hover{background:#1d2230;}
+
+
+#google_translate_element {
+    font-size: 12px;
+}
+.goog-te-gadget {
+    color: #00ff9c !important;
+}
+.goog-te-combo {
+    background: #161a22;
+    color: #fff;
+    border: 1px solid #1f2430;
+    border-radius: 6px;
+    padding: 4px 6px;
+}
+.goog-logo-link,
+.goog-te-gadget span {
+    display: none !important;
+}
+
+
+.lang-switch {
+    font-size: 12px;
+    color: #00ff9c;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ===== Top Navigation ===== */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #0b0e14;
+    padding: 12px 20px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #1f2430;
+}
+
+.top-nav .brand {
+    font-size: 18px;
+    font-weight: bold;
+    color: #00ff9c;
+}
+
+.top-nav .nav-link {
+    color: #00ff9c;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 6px 14px;
+    border-radius: 6px;
+    background: #161a22;
+}
+
+.top-nav .nav-link:hover {
+    background: #1f2430;
+}
+
+
+/* ===== Insight Cards ===== */
+.insight-row {
+    display: flex;
+    gap: 16px;
+    margin: 20px 0 30px;
+    flex-wrap: wrap; /* 小屏自动换行 */
+}
+
+.insight-card {
+    flex: 1 1 280px;
+    max-width: 420px;   /* ✅ 新增：限制最大宽度 */
+    background: #161a22;
+    border-radius: 12px;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border: 1px solid #1f2430;
+}
+
+.insight-row {
+    display: flex;
+    gap: 16px;
+    margin: 20px 0 30px;
+    flex-wrap: wrap;
+    justify-content: center;  /* ✅ 新增 */
+}
+
+
+.insight-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 18px rgba(0,255,156,0.15);
+    border-color: #00ff9c;
+}
+
+.insight-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #00ff9c;
+}
+
+.insight-desc {
+    font-size: 13px;
+    opacity: 0.9;
+    margin-bottom: 10px;
+}
+
+.insight-meta {
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.4;
+}
+
+/* ===== Invest Class ===== */
+.invest-Attention {
+    color: #00ff9c;
+    font-weight: bold;
+}
+
+.invest-Potential {
+    color: #7fff00;
+    font-weight: bold;
+}
+
+.invest-Watchlist {
+    color: #ffd166;
+    font-weight: bold;
+}
+
+.invest-Caution {
+    color: #ff9f1c;
+    font-weight: bold;
+}
+
+.invest-Underweight {
+    color: #ff5c5c;
+    font-weight: bold;
+}
+
+
+
+/* Signal colors */
+.signal-ATTENTION{color:#00ff9c; font-weight:bold;}
+.signal-UNDERWEIGHT{color:#ff5c5c; font-weight:bold;}
+.signal-WATCHLIST{color:#ffd166; font-weight:bold;}
+
+/* Investment rating stars */
+.rating { font-weight:bold; }
+.rating-5 { color:#00ff9c; }  
+.rating-4 { color:#7fff00; }  
+.rating-3 { color:#ffd166; }  
+.rating-2 { color:#ff9f1c; }  
+.rating-1 { color:#ff5c5c; }
+
+/* Risk rating stars */
+.risk-star { font-weight:bold; }
+.risk-low { color:#00ff9c; } 
+.risk-medium { color:#ffd166; }
+.risk-high { color:#ff5c5c; }
+
+/* Score bar (Safety, Signal Quality) */
+.score-bar{height:6px; border-radius:3px; background:#2a2f3a; position:relative;}
+.score-fill{height:100%; border-radius:3px;}
+.positive{background:#00ff9c;}
+.negative{background:#ff5c5c;}
+
+.trend-up::after{content:" ▲"; color:#00ff9c;}
+.trend-down::after{content:" ▼"; color:#ff5c5c;}
+.trend-flat::after{content:" ●"; color:#aaa;}
+
+
+/* ===== Safety Level ===== */
+.safe-Safe { color:#00ff9c; font-weight:bold; }
+.safe-Mediate { color:#ffd166; font-weight:bold; }
+.safe-Caution { color:#ff5c5c; font-weight:bold; }
+
+/* ===== Category Tag ===== */
+.tag {
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: bold;
+  background:#2a2f3a;
+  color:#fff;
+}
+
+/* ===== Maturity ===== */
+.maturity-MATURE { color:#7fff00; }
+.maturity-EARLY { color:#ffd166; }
+
+
+
+
+@media(max-width:800px){table{display:block;overflow-x:auto;}}
+
+/* Tooltip */
+.tooltip {
+    position: absolute;
+    background: #1f2430;
+    color: #e6e6e6;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    z-index: 1000;
+    pointer-events: none;
+    max-width: 300px;
+    white-space: normal;
+    word-break: break-word;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    display: none;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    color: #aaa;
+}
+</style>
+</head>
+<body>
+<amp-auto-ads type="adsense"
+        data-ad-client="ca-pub-4853280371546570">
+</amp-auto-ads>
+
+<div class="top-nav">
+    <span class="brand">📊 Cryptobex</span>
+
+    <div style="display:flex; gap:14px; align-items:center;">
+        <!-- Language Switch -->
+        <div class="lang-switch">
+            🌐 Language:
+            <span id="google_translate_element"></span>
+        </div>
+
+        <a href="report.html" class="nav-link">Insights</a>
+    </div>
+</div>
+
+
+
+<h1>📊 Cryptobex Rank</h1>
+
+<div class="insight-row">
+    <div class="insight-card" onclick="location.href='report.html'">
+        <div class="insight-title">📘 Insights</div>
+        <div class="insight-desc">
+            Quantitative outlook & Insights
+        </div>
+        <div class="insight-meta">
+            • Market Overview <br>
+            • Analytic Discussion
+        </div>
+    </div>
+
+    <div class="insight-card" onclick="location.href='contactus.html'">
+        <div class="insight-title">📘 Contact Us</div>
+        <div class="insight-desc">
+            Contact and Reach Out for More
+        </div>
+        <div class="insight-meta">
+            • Consultation<br>
+            • Customised Service
+        </div>
+    </div>
+
+
+</div>
+
+<div class="controls">
+    <input type="text" id="search" placeholder="Search Symbol (e.g. ADA)" />
+    <select id="signalFilter">
+        <option value="">All Signals</option>
+        <option value="ATTENTION">ATTENTION</option>
+        <option value="UNDERWEIGHT">UNDERWEIGHT</option>
+        <option value="WATCHLIST">WATCHLIST</option>
+    </select>
+
+
+    <!-- ===== 新增：多维过滤 ===== -->
+    <select id="maturityFilter">
+    <option value="">All Maturity</option>
+    <option value="MATURE">MATURE</option>
+    <option value="EARLY">EARLY</option>
+    </select>
+
+    <select id="investFilter">
+    <option value="">All Invest Class</option>
+    <option value="Attention">Attention</option>
+    <option value="Potential">Potential</option>
+    <option value="Watchlist">Watchlist</option>
+    <option value="Caution">Caution</option>
+    <option value="Underweight">Underweight</option>
+    </select>
+
+    <select id="riskFilter">
+    <option value="">All Risk</option>
+    <option value="low">Low</option>
+    <option value="medium">Medium</option>
+    <option value="high">High</option>
+    </select>
+
+    <select id="safetyFilter">
+    <option value="">All Safety</option>
+    <option value="Safe">Safe</option>
+    <option value="Mediate">Mediate</option>
+    <option value="Caution">Caution</option>
+    </select>
+
+    <input type="number" id="minComposite" placeholder="Min Composite" style="width:120px">
+    <!-- <input type="number" id="minReturn" placeholder="Min Return %" style="width:120px"> -->
+    <input type="number" id="minHealthy" placeholder="Min Healthy" style="width:120px">
+    <!-- ===== NEW: Quantiment / Safety Score Filters ===== -->
+    <input type="number" id="minQuantiment" placeholder="Min Quantiment" style="width:140px">
+    <input type="number" id="minSafetyScore" placeholder="Min Safety Score" style="width:150px">
+
+</div>
+
+<div id="activeFilters" style="margin:8px 0;font-size:12px;color:#aaa;"></div>
+
+
+
+<table>
+<thead>
+<tr>
+  <th onclick="sortTable('Symbol')">Symbol</th>
+  <th onclick="sortTable('Maturity')">Maturity</th>
+  <th onclick="sortTable('Current')">Price</th>
+  <th onclick="sortTable('Trend')">Trend</th>
+  <th onclick="sortTable('Sentiment')">Sentiment</th>
+  <th onclick="sortTable('Composite')">Composite</th>
+  <th onclick="sortTable('Healthy')">Healthy</th>
+  <th onclick="sortTable('Belief')">Belief</th>
+  <th onclick="sortTable('Quantiment')">Quantiment</th>
+  <th onclick="sortTable('SafetyScore')">Safety</th>
+  <th onclick="sortTable('Signal')">Signal</th>
+  <th onclick="sortTable('InvestClass')">Invest Class</th>
+  <th onclick="sortTable('Risk')">Risk</th>
+  <th onclick="sortTable('ReferenceRating')">Reference Rating</th>
+  <th onclick="sortTable('Return')">Return %</th>
+  <th onclick="sortTable('Strategy')">Strategy</th>
+
+</tr>
+
+</thead>
+<tbody id="tableBody"></tbody>
+</table>
+
+<div class="tooltip" id="tooltip"></div>
+
+<footer>
+⚠️ This platform is not a financial service and is not responsible for investment advice.<br>
+Powered by Cybex
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script>
+let data = [];
+let currentSort = { key: null, asc: true };
+const tooltip = document.getElementById("tooltip");
+
+function escapeHtml(text) {
+    const map = { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' };
+    return String(text).replace(/[&<>"']/g, m => map[m]);
+}
+
+// Investment Rating → 星号和颜色
+function formatRating(rating) {
+    let num = parseInt(rating) || 0;
+    if(num < 1) num = 1;
+    if(num > 5) num = 5;
+    let stars = '★'.repeat(num) + '☆'.repeat(5-num);
+    return `<span class="rating rating-${num}">${stars}</span>`;
+}
+
+// Risk → 星号和颜色
+function formatRisk(risk) {
+    const r = (risk || '').toLowerCase();
+    let cls='', stars='★';
+    if(r.includes('low')) cls='risk-low';
+    else if(r.includes('mediate') || r.includes('medium')) cls='risk-medium';
+    else cls='risk-high';
+    return `<span class="risk-star ${cls}">${stars}</span>`;
+}
+
+// Score → 颜色进度条
+
+// function formatScore(score) {
+//     let s = parseFloat(score) || 0;
+//    let cls = s>=50 ? 'positive' : 'negative';
+//    return `<div class="score-bar"><div class="score-fill ${cls}" style="width:${Math.min(Math.abs(s),100)}%"></div></div>${s}`;
+//}
+
+
+// Score → 渐变颜色进度条（红→黄→绿）
+function formatScore(score) {
+    let s = parseFloat(score) || 0;
+    let width = Math.min(Math.max(s, 0), 100);
+
+    // 红→黄→绿渐变
+    let r=0,g=0,b=0;
+    if(s <= 50){ 
+        // 0~50: 红到黄
+        r = 255;
+        g = Math.round(255 * (s/50)); // 0->255
+        b = 0;
+    } else { 
+        // 50~100: 黄到绿
+        r = Math.round(255 * (1-(s-50)/50)); // 255->0
+        g = 255;
+        b = 0;
+    }
+    let color = `rgb(${r},${g},${b})`;
+    return `<div class="score-bar"><div class="score-fill" style="width:${width}%;background:${color}"></div></div>${s}`;
+}
+
+
+function loadCSV() {
+    Papa.parse("data/crypto_rating_table.csv", {
+        header: true,
+        download: true,
+        dynamicTyping: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+            data = results.data
+                .filter(d => d.Symbol)
+                
+                .map(d => ({
+                    Symbol: d.Symbol,
+                    Maturity: d.Maturity || 'MATURE',
+
+                    Current: Number(d['Current Price']) || 0,
+
+                    Trend:
+                        d.Trend?.toLowerCase().includes('up') ? 'up' :
+                        d.Trend?.toLowerCase().includes('down') ? 'down' : 'flat',
+
+
+                    Strategy: d.StrategicSignal || '',  // 确保字段名和 CSV 对应
+                    ReferenceRating: (() => {
+                    const r = (d['Reference Rating'] || '').toString().trim();
+                    const map = { 'A+':5, 'A':4, 'B+':3, 'B':2, 'C':1 };
+                    return map[r] || 0;
+                    })(),
+
+
+                    Composite: Number(d['Composite Score']) || 0,
+                    Healthy: Number(d['Healthy Score']) || 0,
+
+                    Belief: Number(d['Belief Quality']) || 0,
+                    Quantiment: Number(d['Quantiment (%)']) || 0,
+
+                    SafetyScore: Number(d['Safety Score']) || 0,
+                    SafetyLevel: d.Safety || 'Caution',
+
+                    Signal: d['Category signal'] || d.Signal || 'WATCHLIST',
+
+                    InvestClass: d['Reference State'] || '',
+                    ReferenceState: d['Reference State'] || '',
+
+                    Risk: d.Risk || '',
+
+                    ReferenceRating: (() => {
+                    const r = (d['Reference Rating'] || '').toString().trim();
+                    const map = { 'A+':5, 'A':4, 'B+':3, 'B':2, 'C':1 };
+                    return map[r] || 0;
+                    })(),
+
+
+                    Return: Number(d['Reference Return (%)'] || d['Expected Return (%)']) || 0,
+
+                    Strategy: d['Strategic Signal'] || '',
+
+                    Conclusion: d.Summary || d.Conclusion || '',
+                    FuturePrices: String(d['Reference Prices'] || d['Future Prices'] || ''),
+                    Sentiment: d.Sentiment || ''   // <-- 新增
+                }));
+
+                
+            renderTable();
+        }
+    });
+}
+
+
+
+/* ===== NEW FILTER LOGIC（增量，不替换任何原函数）===== */
+function getFilters(){
+  return {
+    search: document.getElementById("search").value.toUpperCase(),
+    signal: document.getElementById("signalFilter").value,
+    maturity: document.getElementById("maturityFilter").value,
+    invest: document.getElementById("investFilter").value,
+    risk: document.getElementById("riskFilter").value,
+    safety: document.getElementById("safetyFilter").value,
+    minComposite: Number(document.getElementById("minComposite").value) || null,
+    // minReturn: Number(document.getElementById("minReturn").value) || null,
+    minHealthy: Number(document.getElementById("minHealthy").value) || null,
+    minQuantiment: Number(document.getElementById("minQuantiment").value) || null,
+    minSafetyScore: Number(document.getElementById("minSafetyScore").value) || null
+
+
+  };
+}
+
+function applyFilters(row, f){
+  if(f.search && !row.Symbol.toUpperCase().includes(f.search)) return false;
+  if(f.signal && row.Signal !== f.signal) return false;
+  if(f.maturity && row.Maturity !== f.maturity) return false;
+  if(f.invest && row.InvestClass !== f.invest) return false;
+  if(f.risk && !row.Risk.toLowerCase().includes(f.risk)) return false;
+  if(f.safety && row.SafetyLevel !== f.safety) return false;
+  if(f.minComposite !== null && row.Composite < f.minComposite) return false;
+  //   if(f.minReturn !== null && row.Return < f.minReturn) return false;
+  if(f.minHealthy !== null && row.Healthy < f.minHealthy) return false;
+  if(f.minQuantiment !== null && row.Quantiment < f.minQuantiment) return false;
+  if(f.minSafetyScore !== null && row.SafetyScore < f.minSafetyScore) return false;
+
+
+
+  return true;
+}
+
+
+function renderActiveFilters(filters){
+  const box = document.getElementById("activeFilters");
+  const items = [];
+
+  if(filters.minHealthy !== null)
+    items.push(`Healthy ≥ ${filters.minHealthy}`);
+
+  if(filters.minComposite !== null)
+    items.push(`Composite ≥ ${filters.minComposite}`);
+
+  if(filters.minQuantiment !== null)
+    items.push(`Quantiment ≥ ${filters.minQuantiment}`);
+
+  if(filters.minSafetyScore !== null)
+    items.push(`Safety Score ≥ ${filters.minSafetyScore}`);
+
+  if(filters.signal)
+    items.push(`Signal = ${filters.signal}`);
+
+  if(filters.invest)
+    items.push(`Invest = ${filters.invest}`);
+
+  if(filters.risk)
+    items.push(`Risk = ${filters.risk}`);
+
+  box.innerHTML = items.length
+    ? `Active Filters: ${items.join(" · ")}`
+    : "";
+}
+
+
+function renderTable() {
+    const body = document.getElementById("tableBody");
+    const search = (document.getElementById("search").value || "").toUpperCase();
+    const signalF = document.getElementById("signalFilter").value;
+    body.innerHTML = "";
+
+
+    const filters = getFilters();
+    renderActiveFilters(filters);
+
+
+    data
+    .filter(d => applyFilters(d, filters))
+    .forEach(d => {
+        const tr = document.createElement("tr");
+        tr.dataset.conclusion = escapeHtml(d.Conclusion);
+        tr.dataset.future = escapeHtml(d.FuturePrices);
+
+        tr.innerHTML = `
+                <td>
+                <a href="coinTrend.html?symbol=${encodeURIComponent(d.Symbol.replace('/', '_'))}"
+                    style="color:#00ff9c;font-weight:bold;text-decoration:none">
+                    ${escapeHtml(d.Symbol)}
+                </a>
+                </td>
+
+                <td class="maturity-${d.Maturity}">${d.Maturity}</td>
+
+                <td>${d.Current.toFixed(2)}</td>
+
+                <td class="trend-${d.Trend}">${d.Trend}</td>
+                <td>${escapeHtml(d.Sentiment)}</td>
+
+                <td>${formatScore(d.Composite)}</td>
+
+                <td>${formatScore(d.Healthy)}</td>
+
+                <td>${formatScore(d.Belief)}</td>
+
+                <td>${formatScore(d.Quantiment)}</td>
+
+                
+
+
+                <td>
+                <div class="safe-${d.SafetyLevel}">
+                    ${formatScore(d.SafetyScore)}
+                    ${d.SafetyLevel}
+                </div>
+                </td>
+
+                <td class="signal-${d.Signal}">${d.Signal}</td>
+
+                <td class="invest-${d.InvestClass}">${d.InvestClass}</td>
+
+                <td>${formatRisk(d.Risk)}</td>
+
+                <td>${formatReferenceRating(d.ReferenceRating)}</td>
+
+
+                <td>${d.Return.toFixed(2)}%</td>
+
+                <td>
+                <span class="tag">${escapeHtml(d.Strategy)}</span>
+                </td>
+                `;
+
+        body.appendChild(tr);
+    });
+}
+
+function formatReferenceRating(score){
+    const map = {
+        5:{label:'A+', color:'#00ff9c'},
+        4:{label:'A',  color:'#7fff00'},
+        3:{label:'B+', color:'#ffd166'},
+        2:{label:'B',  color:'#ff9f1c'},
+        1:{label:'C',  color:'#ff5c5c'},
+        0:{label:'-',  color:'#666'}
+    };
+    const r = map[score] || map[0];
+    const stars = '★'.repeat(score) + '☆'.repeat(5-score);
+    return `<span style="color:${r.color};font-weight:bold">${r.label} ${stars}</span>`;
+}
+
+
+
+function sortTable(key) {
+    if (currentSort.key === key) currentSort.asc = !currentSort.asc;
+    else currentSort = { key, asc: true };
+
+    const trendOrder = { up: 3, flat: 2, down: 1 };
+    const signalOrder = { 'ATTENTION': 3, 'WATCHLIST': 2, 'UNDERWEIGHT': 1 };
+    
+    const riskMap = { low:3, medium:2, mediate:2, high:1 };
+    const maturityMap = { MATURE:3, GROWTH:2, EARLY:1 };
+
+
+    data.sort((a,b)=>{
+        let va = a[key], vb = b[key];
+
+        if(key==='Trend'){ 
+            va = trendOrder[va] || 0; 
+            vb = trendOrder[vb] || 0; 
+        }
+        else if(key==='Signal'){ 
+            va = signalOrder[va] || 0; 
+            vb = signalOrder[vb] || 0; 
+        }
+        else if(key==='Risk'){ 
+            va = (va||'').toLowerCase().split(' ')[0];
+            vb = (vb||'').toLowerCase().split(' ')[0];
+            va = riskMap[va] || 0;
+            vb = riskMap[vb] || 0;
+        }
+
+        else if(key === 'ReferenceRating'){
+        va = Number(va) || 0;
+        vb = Number(vb) || 0;
+        }
+        else if(key === 'Strategy'){ 
+            va = (va||'').toLowerCase();
+            vb = (vb||'').toLowerCase();
+        }
+
+        else if(key === 'Sentiment') {
+            va = (va||'').toLowerCase();
+            vb = (vb||'').toLowerCase();
+        }
+
+        else if (key === 'InvestClass') {
+            const classOrder = {
+                'Attention': 5,
+                'Potential': 4,
+                'Watchlist': 3,
+                'Caution': 2,
+                'Underweight': 1
+            };
+            va = classOrder[va] || 0;
+            vb = classOrder[vb] || 0;
+        }
+
+
+
+        if(typeof va==='number' && typeof vb==='number') return currentSort.asc ? va-vb : vb-va;
+        return currentSort.asc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
+    });
+
+    renderTable();
+}
+
+// Tooltip
+document.getElementById("tableBody").addEventListener("mousemove", function(e){
+    const tr = e.target.closest("tr");
+    if(tr){
+        tooltip.style.display = "block";
+        tooltip.style.top = (e.pageY + 10) + "px";
+        tooltip.style.left = (e.pageX + 10) + "px";
+        tooltip.innerHTML = `<strong>Conclusion:</strong> ${tr.dataset.conclusion}<br>
+                             <strong>Future Prices:</strong> ${tr.dataset.future}`;
+    } else { tooltip.style.display = "none"; }
+});
+
+document.getElementById("tableBody").addEventListener("mouseleave", ()=>tooltip.style.display="none");
+// document.getElementById("search").addEventListener("input", renderTable);
+// document.getElementById("signalFilter").addEventListener("change", renderTable);
+/* ===== 新增：所有 filter 统一触发渲染 ===== */
+document
+  .querySelectorAll(".controls input, .controls select")
+  .forEach(el => el.addEventListener("input", renderTable));
+
+
+
+loadCSV();
+</script>
+
+<!-- ===== Google Translate Script ===== -->
+<script type="text/javascript">
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+        {
+            pageLanguage: 'en',
+            includedLanguages: 'en,zh-CN,th,zh-TW,ja,ko,fr,de,es,it,pt,ru,ar',
+            layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL,
+            autoDisplay: false
+        },
+        'google_translate_element'
+    );
+}
+</script>
+
+
+
+
+
+<script
+    type="text/javascript"
+    src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+
+
+
+</body>
+</html>
