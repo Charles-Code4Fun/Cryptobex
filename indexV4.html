@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cryptobex Multi-Asset</title>
+
+<style>
+body { font-family: Arial; background:#0e1117; color:#e6e6e6; margin:20px;}
+
+h1,h2{ text-align:center; }
+
+.section {
+    margin:40px 0;
+}
+
+.header-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.link-btn{
+    background:#161a22;
+    color:#00ff9c;
+    padding:6px 12px;
+    border-radius:6px;
+    text-decoration:none;
+    font-size:12px;
+}
+.link-btn:hover{ background:#1f2430; }
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#161a22;
+}
+
+th, td{
+    padding:8px;
+    text-align:center;
+    border-bottom:1px solid #2a2f3a;
+    font-size:12px;
+}
+
+th{ background:#1f2430; }
+
+.score-bar{height:6px; background:#2a2f3a; border-radius:3px;}
+.score-fill{height:100%; border-radius:3px;}
+
+.tag{ background:#2a2f3a; padding:2px 6px; border-radius:4px;}
+
+.green{color:#00ff9c;}
+.yellow{color:#ffd166;}
+.red{color:#ff5c5c;}
+
+.insight-box{
+    background:#161a22;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:15px;
+    font-size:13px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>📊 Cryptobex Multi-Asset Dashboard</h1>
+
+<!-- ================= CRYPTO ================= -->
+<div class="section">
+
+    <div class="header-row">
+        <h2>🪙 Crypto (Sharpe > 1)</h2>
+        <a href="coinTrend.html" class="link-btn">View Crypto Trends →</a>
+    </div>
+
+    <!-- Insights -->
+    <div class="insight-box">
+        <b>Crypto Insights</b><br>
+        • High Sharpe assets indicate strong risk-adjusted momentum<br>
+        • Focus on ATTENTION & Potential categories<br>
+        • Quantiment + Sentiment alignment = strongest signals
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Price</th>
+                <th>Trend</th>
+                <th>Composite</th>
+                <th>Quantiment</th>
+                <th>Sharpe</th>
+                <th>Signal</th>
+                <th>Return</th>
+            </tr>
+        </thead>
+        <tbody id="cryptoBody"></tbody>
+    </table>
+
+</div>
+
+
+<!-- ================= STOCK ================= -->
+<div class="section">
+
+    <div class="header-row">
+        <h2>📈 Stocks (Sharpe > 1)</h2>
+        <a href="stockTrend.html" class="link-btn">View Stock Trends →</a>
+    </div>
+
+    <!-- Insights -->
+    <div class="insight-box">
+        <b>Stock Insights</b><br>
+        • Sharpe > 1 signals institutional-grade stability<br>
+        • Strong candidates often show high Composite + Healthy scores<br>
+        • Risk-adjusted return dominates over pure return
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Price</th>
+                <th>Trend</th>
+                <th>Composite</th>
+                <th>Quantiment</th>
+                <th>Sharpe</th>
+                <th>Signal</th>
+                <th>Return</th>
+            </tr>
+        </thead>
+        <tbody id="stockBody"></tbody>
+    </table>
+
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+<script>
+
+let cryptoData = [];
+let stockData = [];
+
+/* ===== 通用评分条 ===== */
+function formatScore(s){
+    let v = Math.min(Math.max(s,0),100);
+    let color = v>60 ? "#00ff9c" : v>40 ? "#ffd166" : "#ff5c5c";
+    return `<div class="score-bar"><div class="score-fill" style="width:${v}%;background:${color}"></div></div>${v}`;
+}
+
+/* ===== 加载CSV ===== */
+function loadCSV(path, type){
+    Papa.parse(path,{
+        header:true,
+        download:true,
+        dynamicTyping:true,
+        complete:function(res){
+
+            const parsed = res.data
+                .filter(d => d.Symbol && Number(d.sharpRatio) > 1) // 🔥核心过滤
+                .map(d => ({
+                    Symbol: d.Symbol,
+                    Price: Number(d['Current Price']) || 0,
+                    Trend: (d.Trend||'flat').toLowerCase(),
+                    Composite: Number(d['Composite Score']) || 0,
+                    Quantiment: Number(d['Quantiment (%)']) || 0,
+                    Sharpe: Number(d.sharpRatio) || 0,
+                    Signal: d['Category signal'] || '',
+                    Return: Number(d['Reference Return (%)']) || 0
+                }));
+
+            if(type==="crypto") cryptoData = parsed;
+            else stockData = parsed;
+
+            renderAll();
+        }
+    });
+}
+
+/* ===== 渲染 ===== */
+function renderTable(data, id){
+    const body = document.getElementById(id);
+    body.innerHTML="";
+
+    data.forEach(d=>{
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${d.Symbol}</td>
+            <td>${d.Price.toFixed(2)}</td>
+            <td>${d.Trend}</td>
+            <td>${formatScore(d.Composite)}</td>
+            <td>${formatScore(d.Quantiment)}</td>
+            <td class="green">${d.Sharpe.toFixed(2)}</td>
+            <td>${d.Signal}</td>
+            <td>${d.Return.toFixed(2)}%</td>
+        `;
+
+        body.appendChild(tr);
+    });
+}
+
+function renderAll(){
+    renderTable(cryptoData,"cryptoBody");
+    renderTable(stockData,"stockBody");
+}
+
+/* ===== 初始化 ===== */
+loadCSV("data/cryptos/crypto_rating_table.csv","crypto");
+loadCSV("data/stocks/stock_rating_table.csv","stock");
+
+</script>
+
+</body>
+</html>

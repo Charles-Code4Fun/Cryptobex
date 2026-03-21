@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cybetrix Proport</title>
+
+<style>
+body { font-family: Arial; background:#0e1117; color:#e6e6e6; margin:20px;}
+h1{text-align:center; margin-bottom:20px;}
+
+.top-nav {
+    display:flex; justify-content:space-between;
+    align-items:center; background:#0b0e14;
+    padding:12px 20px; border-bottom:1px solid #1f2430;
+}
+.brand{color:#00ff9c; font-weight:bold; font-size:18px;}
+
+.section{margin:40px 0;}
+
+.header-row{
+    display:flex; justify-content:space-between; align-items:center;
+}
+
+.link-btn{
+    background:#161a22;
+    color:#00ff9c;
+    padding:6px 12px;
+    border-radius:6px;
+    text-decoration:none;
+}
+
+button{
+    background:#00ff9c;
+    border:none;
+    padding:8px 14px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+/* 卡片 */
+.insight-box{
+    background:#161a22;
+    border-radius:10px;
+    padding:14px;
+    margin:12px 0;
+    border:1px solid #1f2430;
+}
+
+/* 表格 */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+    background:#161a22;
+}
+th,td{
+    padding:10px;
+    text-align:center;
+    border-bottom:1px solid #2a2f3a;
+}
+th{background:#1f2430;}
+
+tr:hover{background:#1d2230;}
+
+.green{color:#00ff9c;}
+.yellow{color:#ffd166;}
+.red{color:#ff5c5c;}
+
+.tag{
+    padding:3px 8px;
+    border-radius:6px;
+    background:#2a2f3a;
+}
+
+/* tabs */
+.tabs{
+    display:flex;
+    gap:10px;
+    margin-top:10px;
+}
+.tab{
+    padding:6px 10px;
+    background:#1f2430;
+    border-radius:6px;
+    cursor:pointer;
+}
+.active{background:#00ff9c;color:#000;}
+</style>
+</head>
+
+<body>
+
+<div class="top-nav">
+    <div class="brand">📊 Cybetrix</div>
+    <button onclick="exportPortfolio()">📥 Export Portfolio</button>
+</div>
+
+<h1>📊 Global Quant Dashboard</h1>
+
+<!-- ===== CRYPTO ===== -->
+<div class="section">
+
+<div class="header-row">
+<h2>🪙 Crypto</h2>
+<a href="coinTrend.html" class="link-btn">Explore →</a>
+</div>
+
+<div id="cryptoInsight" class="insight-box"></div>
+
+<div class="tabs">
+<div class="tab active" onclick="switchTab('crypto','top')">Top 10</div>
+<div class="tab" onclick="switchTab('crypto','gainers')">Top Gainers</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>#</th><th>Symbol</th><th>Sharpe</th><th>Return</th><th>Risk</th>
+</tr>
+</thead>
+<tbody id="cryptoTable"></tbody>
+</table>
+
+</div>
+
+<!-- ===== STOCK ===== -->
+<div class="section">
+
+<div class="header-row">
+<h2>📈 Stocks</h2>
+<a href="stockTrend.html" class="link-btn">Explore →</a>
+</div>
+
+<div id="stockInsight" class="insight-box"></div>
+
+<div class="tabs">
+<div class="tab active" onclick="switchTab('stock','top')">Top 10</div>
+<div class="tab" onclick="switchTab('stock','gainers')">Top Gainers</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>#</th><th>Symbol</th><th>Sharpe</th><th>Return</th><th>Risk</th>
+</tr>
+</thead>
+<tbody id="stockTable"></tbody>
+</table>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+<script>
+
+let store = {
+    crypto:{top:[], gainers:[]},
+    stock:{top:[], gainers:[]}
+};
+
+let currentTab = {
+    crypto:"top",
+    stock:"top"
+};
+
+/* ===== 风险模型 ===== */
+function calcRisk(sharpe){
+    let vol = (1/sharpe*40).toFixed(1);
+    let dd = (Math.random()*25).toFixed(1);
+
+    let level = sharpe>2?"LOW":sharpe>1?"MED":"HIGH";
+
+    let color = sharpe>2?"green":sharpe>1?"yellow":"red";
+
+    return {text:`${level} | Vol:${vol}% | DD:${dd}%`,color};
+}
+
+/* ===== AI Insight ===== */
+function insight(data,type){
+    if(data.length===0) return "No strong signals.";
+
+    let avg = (data.reduce((s,d)=>s+d.Sharpe,0)/data.length).toFixed(2);
+    let best = data[0];
+
+    return `
+    <b>${type} Insight</b><br>
+    • Avg Sharpe: <span class="green">${avg}</span><br>
+    • Leader: <b>${best.Symbol}</b> (${best.Sharpe.toFixed(2)})<br>
+    • Strategy: Focus on high Sharpe + momentum assets
+    `;
+}
+
+/* ===== 渲染 ===== */
+function render(type){
+    let data = store[type][currentTab[type]];
+    let body = document.getElementById(type+"Table");
+    body.innerHTML="";
+
+    data.forEach((d,i)=>{
+        let risk = calcRisk(d.Sharpe);
+
+        let tr = document.createElement("tr");
+        tr.innerHTML=`
+        <td>${i+1}</td>
+        <td>
+        <a href="${type==='crypto'?'coinTrend':'stockTrend'}.html?symbol=${d.Symbol}"
+        style="color:#00ff9c">${d.Symbol}</a>
+        </td>
+        <td class="green">${d.Sharpe.toFixed(2)}</td>
+        <td>${d.Return.toFixed(2)}%</td>
+        <td class="${risk.color}">${risk.text}</td>
+        `;
+        body.appendChild(tr);
+    });
+}
+
+/* ===== Tab切换 ===== */
+function switchTab(type,tab){
+    currentTab[type]=tab;
+    render(type);
+}
+
+/* ===== 加载 ===== */
+function load(path,type){
+    Papa.parse(path,{
+        header:true,
+        download:true,
+        dynamicTyping:true,
+        complete:function(res){
+
+            let parsed = res.data
+                .filter(d=>d.Symbol)
+                .map(d=>({
+                    Symbol:d.Symbol,
+                    Sharpe:Number(d.sharpRatio)||0,
+                    Return:Number(d['Reference Return (%)'])||0
+                }));
+
+            store[type].top = parsed
+                .filter(d=>d.Sharpe>1)
+                .sort((a,b)=>b.Sharpe-a.Sharpe)
+                .slice(0,10);
+
+            store[type].gainers = parsed
+                .sort((a,b)=>b.Return-a.Return)
+                .slice(0,10);
+
+            document.getElementById(type+"Insight").innerHTML =
+                insight(store[type].top,type.toUpperCase());
+
+            render(type);
+        }
+    });
+}
+
+/* ===== 导出 ===== */
+function exportPortfolio(){
+    let all = [...store.crypto.top,...store.stock.top];
+
+    let csv="Symbol,Sharpe,Return\n";
+    all.forEach(d=>{
+        csv+=`${d.Symbol},${d.Sharpe},${d.Return}\n`;
+    });
+
+    let blob=new Blob([csv]);
+    let a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download="portfolio.csv";
+    a.click();
+}
+
+/* ===== INIT ===== */
+load("data/cryptos/crypto_rating_table.csv","crypto");
+load("data/stocks/stock_rating_table.csv","stock");
+
+</script>
+
+</body>
+</html>

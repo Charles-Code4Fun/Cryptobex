@@ -40,8 +40,8 @@ if(!symbol || !/^[A-Z0-9_]+$/.test(symbol)){
 // 修改标题显示：将 _ 替换为 |
 document.getElementById("title").innerText = symbol.replace("_","|") + " Trend";
 
-const ohlcCsvPath = `data/cryptos/${symbol}/${symbol}_data.csv`;
-const ratingCsvPath = `data/cryptos/crypto_rating_table.csv`;
+const ohlcCsvPath = `data/stocks/${symbol}/${symbol}_data.csv`;
+const ratingCsvPath = `data/stocks/stock_rating_table.csv`;
 let riskInfo = {risk:"N/A", safetyScore:0, investment:"N/A", conclusion:"N/A"};
 
 // ---------- 加载 Rating CSV ----------
