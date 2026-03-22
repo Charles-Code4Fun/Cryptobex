@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4853280371546570"
+     crossorigin="anonymous"></script>
+     
+<meta charset="UTF-8">
+<title>Coin Trend</title>
+<style>
+body { background:#0e1117; color:#e6e6e6; font-family: Arial; margin:20px; }
+h1 { text-align:center; margin-bottom:10px; }
+#riskContainer { max-width:1100px; margin:0 auto 20px auto; padding:15px; background:#1c1f26; border-radius:8px; font-size:14px; line-height:1.6; }
+#riskContainer div { margin-bottom:10px; }
+.star { color: gold; font-size:16px; }
+#chartContainer { max-width:1100px; margin:0 auto; height:600px; }
+button { margin:10px 0; padding:8px 14px; background:#1f2430; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+button:hover { background:#2a2f3a; }
+.error { text-align:center; color:#ff6b6b; margin-top:10px; }
+footer { text-align:center; margin-top:20px; font-size:12px; color:#aaa; }
+</style>
+<script src="https://cdn.plot.ly/plotly-2.31.1.min.js"></script>
+</head>
+<body>
+<button onclick="goBack()">← Back to Rank</button>
+<h1 id="title">Coin Trend</h1>
+<div id="riskContainer">Loading risk info...</div>
+<div id="chartContainer"></div>
+<div class="error" id="error"></div>
+
+<script>
+function goBack(){ window.location.href="index.html"; }
+
+const params = new URLSearchParams(window.location.search);
+let symbol = params.get("symbol");
+if(!symbol || !/^[A-Z0-9_]+$/.test(symbol)){ 
+    document.getElementById("error").innerText="Invalid symbol parameter."; 
+    throw new Error("Invalid symbol"); 
+}
+
+// 修改标题显示：将 _ 替换为 |
+document.getElementById("title").innerText = symbol.replace("_","|") + " Trend";
+
+const ohlcCsvPath = `data/forex/${symbol}/${symbol}_data.csv`;
+const ratingCsvPath = `data/forex/forex_rating_table.csv`;
+let riskInfo = {risk:"N/A", safetyScore:0, investment:"N/A", conclusion:"N/A"};
+
+// ---------- 加载 Rating CSV ----------
+fetch(ratingCsvPath).then(res=>res.text()).then(text=>{
+    const lines = text.trim().split("\n");
+    const header = lines.shift().split(",");
+    const idx = {symbol: header.indexOf("Symbol"), risk: header.indexOf("Risk"), safetyScore: header.indexOf("Safety Score"), investment: header.indexOf("Investment Rating"), conclusion: header.indexOf("Conclusion")};
+    const symbolInRating = symbol.replace("_","/");
+    const row = lines.map(l=>l.split(",")).find(r=>r[idx.symbol]===symbolInRating);
+    const container = document.getElementById("riskContainer");
+    if(!row){ container.innerText="No rating info for this symbol."; return; }
+
+    riskInfo.risk = row[idx.risk];
+    riskInfo.safetyScore = parseFloat(row[idx.safetyScore])||0;
+    riskInfo.investment = row[idx.investment];
+    riskInfo.conclusion = row[idx.conclusion];
+
+    let riskIcon="⚪";
+    if(riskInfo.risk.toLowerCase().includes("low")) riskIcon="🟢 Low Risk";
+    else if(riskInfo.risk.toLowerCase().includes("med")) riskIcon="🟡 Medium Risk";
+    else if(riskInfo.risk.toLowerCase().includes("high")) riskIcon="🔴 High Risk";
+
+    let safetyScore = parseFloat(row[idx.safetyScore]);
+    if (isNaN(safetyScore)) safetyScore = 0;
+    const stars = Math.min(Math.max(Math.round(safetyScore/20),0),5);
+    const starStr = '<span class="star">'+ "★".repeat(stars) + "☆".repeat(5-stars) +'</span>';
+
+    container.innerHTML = `
+        <div><strong>Risk:</strong> ${riskIcon}</div>
+        <div><strong>Safety:</strong> ${starStr} (${riskInfo.safetyScore}/100)</div>
+        <div><strong>Investment Rating:</strong> ${riskInfo.investment}</div>
+        <div><strong>Conclusion:</strong> ${riskInfo.conclusion}</div>
+    `;
+}).catch(err=>{ console.error(err); document.getElementById("riskContainer").innerText="Rating is Not Availble in this version."; });
+
+fetch(ohlcCsvPath)
+  .then(res => res.text())
+  .then(text => {
+      const lines = text.trim().split("\n");
+      if (lines.length <= 1) {
+          throw new Error("OHLC CSV is empty");
+      }
+
+      const header = lines.shift().split(",");
+      const idx = {
+          date:  header.indexOf("Date"),
+          open:  header.indexOf("Open"),
+          high:  header.indexOf("High"),
+          low:   header.indexOf("Low"),
+          close: header.indexOf("Close")
+      };
+
+      const dates  = [];
+      const opens  = [];
+      const highs  = [];
+      const lows   = [];
+      const closes = [];
+
+      lines.forEach(line => {
+          const c = line.split(",");
+          if (c.length < header.length) return; // In Case of Dirty Data
+
+          dates.push(c[idx.date]);
+          opens.push(parseFloat(c[idx.open]));
+          highs.push(parseFloat(c[idx.high]));
+          lows.push(parseFloat(c[idx.low]));
+          closes.push(parseFloat(c[idx.close]));
+      });
+
+      // ===== Remain the N Records =====
+      const WINDOW_DAYS = 180;
+
+      const datesN  = dates.slice(-WINDOW_DAYS);
+      const opensN  = opens.slice(-WINDOW_DAYS);
+      const highsN  = highs.slice(-WINDOW_DAYS);
+      const lowsN   = lows.slice(-WINDOW_DAYS);
+      const closesN = closes.slice(-WINDOW_DAYS);
+
+      renderChart(datesN, opensN, highsN, lowsN, closesN);
+  })
+  .catch(err => {
+      console.error(err);
+      document.getElementById("error").innerText =
+          "Failed to load OHLC data. Please check data source.";
+  });
+
+function renderChart(dates, opens, highs, lows, closes){
+    const trace = {x:dates, open:opens, high:highs, low:lows, close:closes, type:'candlestick', increasing:{line:{color:'#00ff9c'}}, decreasing:{line:{color:'#ff5c5c'}}};
+    const layout = {paper_bgcolor:"#0e1117", plot_bgcolor:"#0e1117", font:{color:'#e6e6e6'}, xaxis:{title:'Date', gridcolor:'#222'}, yaxis:{title:'Price', gridcolor:'#222'}};
+    Plotly.newPlot('chartContainer',[trace], layout, {responsive:true});
+}
+</script>
+
+<footer>
+⚠️ This platform is not a financial service and is not responsible for investment advice.<br>
+Powered by Cybex
+</footer>
+
+</body>
+</html>
