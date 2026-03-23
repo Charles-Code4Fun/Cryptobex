@@ -152,7 +152,7 @@ tr:hover{
 <div id="cryptoInsight" class="insight-box"></div>
 
 <div class="tabs">
-<span class="tab-btn active" onclick="switchTab('crypto','top',this)">Top 10</span>
+<span class="tab-btn active" onclick="switchTab('crypto','top',this)">Top 5</span>
 <span class="tab-btn" onclick="switchTab('crypto','gainers',this)">Top Gainers</span>
 </div>
 
@@ -164,6 +164,12 @@ tr:hover{
 </table>
 
 </div>
+
+
+
+
+
+
 
 <!-- ===== STOCK ===== -->
 <div class="section">
@@ -178,7 +184,7 @@ tr:hover{
 <div id="stockInsight" class="insight-box"></div>
 
 <div class="tabs">
-<span class="tab-btn active" onclick="switchTab('stock','top',this)">Top 10</span>
+<span class="tab-btn active" onclick="switchTab('stock','top',this)">Top 5</span>
 <span class="tab-btn" onclick="switchTab('stock','gainers',this)">Top Gainers</span>
 </div>
 
@@ -191,13 +197,46 @@ tr:hover{
 
 </div>
 
+
+<!-- =================================================== 添加显示FOREX数据=========================================================== -->
+<!-- ===== FOREX ===== -->
+<div class="section">
+
+<div class="header-row">
+<h2>📈 Forex</h2>
+<a href="forexIndex.html" class="link-btn">Explore →</a>
+</div>
+
+<input class="search" placeholder="Search Forex..." oninput="filterTable(this,'forex')">
+
+<div id="forexInsight" class="insight-box"></div>
+
+<div class="tabs">
+<span class="tab-btn active" onclick="switchTab('forex','top',this)">Top 5</span>
+<span class="tab-btn" onclick="switchTab('forex','gainers',this)">Top Gainers</span>
+</div>
+
+<table>
+<thead>
+<tr><th>#</th><th>Symbol</th><th>Perf</th><th>Return</th><th>Risk</th></tr>
+</thead>
+<tbody id="forexBody"></tbody>
+</table>
+
+</div>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
 <script>
 
+
+
+/* =================================================== 添加数据=========================================================== */
 let DATA = {
     crypto:{top:[],gainers:[],current:"top"},
-    stock:{top:[],gainers:[],current:"top"}
+    stock:{top:[],gainers:[],current:"top"},
+    forex:{top:[],gainers:[],current:"top"}   // ✅ 加这一行
 };
 
 /* ===== 风险模型（稳定版） ===== */
@@ -222,7 +261,7 @@ function generateInsight(data,type){
     return `
     <b>${type} Insight</b><br>
     Leader: <span class="green">${best.Symbol}</span><br>
-    High Sharpe + Return alignment detected<br>
+    High Performance + Return alignment detected<br>
     Suggested: Focus on top 3 allocation
     `;
 }
@@ -242,13 +281,13 @@ function loadCSV(path,type){
             }));
 
             DATA[type].top = parsed
-                .filter(d=>d.Sharpe>1)
+                .filter(d=>d.Sharpe>0)
                 .sort((a,b)=>b.Sharpe-a.Sharpe)
-                .slice(0,10);
+                .slice(0,5);
 
             DATA[type].gainers = parsed
                 .sort((a,b)=>b.Return-a.Return)
-                .slice(0,10);
+                .slice(0,5);
 
             render(type);
         }
@@ -326,9 +365,13 @@ function reload(){
     location.reload();
 }
 
-/* ===== 初始化 ===== */
+
+
+/* =================================================== 添加数据初始化=========================================================== */
 loadCSV("data/cryptos/crypto_rating_table.csv","crypto");
 loadCSV("data/Stocks/stock_rating_table.csv","stock");
+loadCSV("data/Forex/forex_rating_table.csv","forex");
+
 
 </script>
 
