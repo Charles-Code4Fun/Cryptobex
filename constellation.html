@@ -1,0 +1,246 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+
+<!-- 导航按钮 -->
+<div style="position:absolute; top:10px; left:10px; z-index:9999;">
+    <button onclick="window.location.href='index.html'" style="margin-right:5px;">Home</button>
+    <button onclick="window.location.href='news.html'" style="margin-right:5px;">Catalystrix</button>
+    <button onclick="network.fit()" style="margin-right:5px;">Center</button>
+</div>
+
+<!-- 可选自定义按钮样式 -->
+<style>
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 4px;
+}
+button:hover {
+    background-color: #45a049;
+}
+</style>
+
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#4055c8", "font": {"color": "black"}, "id": "Afghanistan", "label": "Afghanistan", "shape": "dot", "size": 17}, {"color": "#4c66d6", "font": {"color": "black"}, "id": "Israel", "label": "Israel", "shape": "dot", "size": 19}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Military", "label": "Military", "shape": "dot", "size": 17}, {"color": "#4c66d6", "font": {"color": "black"}, "id": "Times", "label": "Times", "shape": "dot", "size": 19}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "UN", "label": "UN", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Same", "label": "Same", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Winner", "label": "Winner", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "No", "label": "No", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Lyme", "label": "Lyme", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Pfizer", "label": "Pfizer", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Palestinians", "label": "Palestinians", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Donald", "label": "Donald", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Toyota", "label": "Toyota", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Technica", "label": "Technica", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Chevron", "label": "Chevron", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "CPAC", "label": "CPAC", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Leo", "label": "Leo", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Dimona", "label": "Dimona", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Israelis", "label": "Israelis", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Ars", "label": "Ars", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "UAE", "label": "UAE", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Leonid", "label": "Leonid", "shape": "dot", "size": 16}, {"color": "#4c66d6", "font": {"color": "black"}, "id": "Hungary", "label": "Hungary", "shape": "dot", "size": 19}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Markets", "label": "Markets", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Attacks", "label": "Attacks", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "A18", "label": "A18", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "IDF", "label": "IDF", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Gulf", "label": "Gulf", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "OnlyFans", "label": "OnlyFans", "shape": "dot", "size": 17}, {"color": "#536edd", "font": {"color": "black"}, "id": "Strait", "label": "Strait", "shape": "dot", "size": 20}, {"color": "#a1c0ff", "font": {"color": "black"}, "id": "business", "label": "business", "shape": "dot", "size": 31}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Portland", "label": "Portland", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Ultimatum", "label": "Ultimatum", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Jospin", "label": "Jospin", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Stanley", "label": "Stanley", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "WHO", "label": "WHO", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Pope", "label": "Pope", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Finland", "label": "Finland", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Arrive", "label": "Arrive", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Meloni", "label": "Meloni", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Sneak", "label": "Sneak", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Over", "label": "Over", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Who", "label": "Who", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Mossad", "label": "Mossad", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Israeli", "label": "Israeli", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Germany", "label": "Germany", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Core", "label": "Core", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "UK", "label": "UK", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Google", "label": "Google", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "NATO", "label": "NATO", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "NASA", "label": "NASA", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "June", "label": "June", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Gas", "label": "Gas", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Veteran", "label": "Veteran", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Bright", "label": "Bright", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Beijing", "label": "Beijing", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "America", "label": "America", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Paris", "label": "Paris", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "China", "label": "China", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "House", "label": "House", "shape": "dot", "size": 17}, {"color": "#6e90f2", "font": {"color": "black"}, "id": "technology", "label": "technology", "shape": "dot", "size": 24}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Morgan", "label": "Morgan", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Washington", "label": "Washington", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Galaxy", "label": "Galaxy", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Desert", "label": "Desert", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Talks", "label": "Talks", "shape": "dot", "size": 17}, {"color": "#5a78e4", "font": {"color": "black"}, "id": "Netanyahu", "label": "Netanyahu", "shape": "dot", "size": 21}, {"color": "#5a78e4", "font": {"color": "black"}, "id": "Europe", "label": "Europe", "shape": "dot", "size": 21}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Kentucky", "label": "Kentucky", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Russia-Ukraine", "label": "Russia-Ukraine", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Sudan", "label": "Sudan", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Skipped", "label": "Skipped", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Comes", "label": "Comes", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Crimson", "label": "Crimson", "shape": "dot", "size": 16}, {"color": "#aec9fc", "font": {"color": "black"}, "id": "Iran", "label": "Iran", "shape": "dot", "size": 33}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Lauder", "label": "Lauder", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Financial", "label": "Financial", "shape": "dot", "size": 17}, {"color": "#ff4d4d", "font": {"color": "black"}, "id": "world", "label": "world", "shape": "dot", "size": 30}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Distant", "label": "Distant", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Says", "label": "Says", "shape": "dot", "size": 17}, {"color": "#7699f6", "font": {"color": "black"}, "id": "News", "label": "News", "shape": "dot", "size": 25}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Dow", "label": "Dow", "shape": "dot", "size": 16}, {"color": "#536edd", "font": {"color": "black"}, "id": "US", "label": "US", "shape": "dot", "size": 20}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Colombia", "label": "Colombia", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Up", "label": "Up", "shape": "dot", "size": 17}, {"color": "#5a78e4", "font": {"color": "black"}, "id": "Tehran", "label": "Tehran", "shape": "dot", "size": 21}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Middle", "label": "Middle", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Orders", "label": "Orders", "shape": "dot", "size": 17}, {"color": "#6788ee", "font": {"color": "black"}, "id": "Hormuz", "label": "Hormuz", "shape": "dot", "size": 23}, {"color": "#4055c8", "font": {"color": "black"}, "id": "General", "label": "General", "shape": "dot", "size": 17}, {"color": "#465ecf", "font": {"color": "black"}, "id": "Apple", "label": "Apple", "shape": "dot", "size": 18}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Election", "label": "Election", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Crash", "label": "Crash", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Arad", "label": "Arad", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "WWDC", "label": "WWDC", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "War", "label": "War", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Pit", "label": "Pit", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Benjamin", "label": "Benjamin", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "EU", "label": "EU", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Bank", "label": "Bank", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Musk", "label": "Musk", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Messages", "label": "Messages", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Crab", "label": "Crab", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Micron", "label": "Micron", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Damascus", "label": "Damascus", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Bill", "label": "Bill", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Agency", "label": "Agency", "shape": "dot", "size": 17}, {"color": "#6180e9", "font": {"color": "black"}, "id": "science", "label": "science", "shape": "dot", "size": 22}, {"color": "#84a7fc", "font": {"color": "black"}, "id": "Trump", "label": "Trump", "shape": "dot", "size": 27}, {"color": "#4055c8", "font": {"color": "black"}, "id": "President", "label": "President", "shape": "dot", "size": 17}, {"color": "#465ecf", "font": {"color": "black"}, "id": "Energy", "label": "Energy", "shape": "dot", "size": 18}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Exploded", "label": "Exploded", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "West", "label": "West", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "International", "label": "International", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Hard", "label": "Hard", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "East", "label": "East", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Big", "label": "Big", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Slovenia", "label": "Slovenia", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Le", "label": "Le", "shape": "dot", "size": 16}, {"color": "#465ecf", "font": {"color": "black"}, "id": "Ukraine", "label": "Ukraine", "shape": "dot", "size": 18}, {"color": "#4c66d6", "font": {"color": "black"}, "id": "Houston", "label": "Houston", "shape": "dot", "size": 19}, {"color": "#4055c8", "font": {"color": "black"}, "id": "CEO", "label": "CEO", "shape": "dot", "size": 17}, {"color": "#6788ee", "font": {"color": "black"}, "id": "Russia", "label": "Russia", "shape": "dot", "size": 23}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Rough", "label": "Rough", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Tesla", "label": "Tesla", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Chileans", "label": "Chileans", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Lionel", "label": "Lionel", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Preview", "label": "Preview", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "From", "label": "From", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Secretary", "label": "Secretary", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "U.S.", "label": "U.S.", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "AfD", "label": "AfD", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Centcom", "label": "Centcom", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Set", "label": "Set", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Nvidia", "label": "Nvidia", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Asteroid", "label": "Asteroid", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Khamenei", "label": "Khamenei", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Antonio", "label": "Antonio", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Cargo", "label": "Cargo", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Chip", "label": "Chip", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Offers", "label": "Offers", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Rises", "label": "Rises", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Radvinsky", "label": "Radvinsky", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Join", "label": "Join", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Meteor", "label": "Meteor", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Revisits", "label": "Revisits", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Kast", "label": "Kast", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "San", "label": "San", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Pen", "label": "Pen", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Forever", "label": "Forever", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Landmark", "label": "Landmark", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Massive", "label": "Massive", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Emmanuel", "label": "Emmanuel", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Absolute", "label": "Absolute", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Has", "label": "Has", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Landing", "label": "Landing", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "France", "label": "France", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "White", "label": "White", "shape": "dot", "size": 16}, {"color": "#465ecf", "font": {"color": "black"}, "id": "Intel", "label": "Intel", "shape": "dot", "size": 18}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Samsung", "label": "Samsung", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Partner", "label": "Partner", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Stock", "label": "Stock", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "DLSS", "label": "DLSS", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Pakistan", "label": "Pakistan", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "US-Iran", "label": "US-Iran", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Natural", "label": "Natural", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "AirDrop", "label": "AirDrop", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Shaped", "label": "Shaped", "shape": "dot", "size": 17}, {"color": "#4055c8", "font": {"color": "black"}, "id": "Pass", "label": "Pass", "shape": "dot", "size": 17}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Comet", "label": "Comet", "shape": "dot", "size": 16}, {"color": "#3b4cc0", "font": {"color": "black"}, "id": "Est\u00e9e", "label": "Est\u00e9e", "shape": "dot", "size": 16}, {"color": "#4055c8", "font": {"color": "black"}, "id": "ISS", "label": "ISS", "shape": "dot", "size": 17}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "Middle", "to": "East"}, {"arrows": "to", "from": "East", "to": "Trump"}, {"arrows": "to", "from": "Trump", "to": "world"}, {"arrows": "to", "from": "Colombia", "to": "News"}, {"arrows": "to", "from": "News", "to": "world"}, {"arrows": "to", "from": "Meloni", "to": "world"}, {"arrows": "to", "from": "Absolute", "to": "Paris"}, {"arrows": "to", "from": "Paris", "to": "Emmanuel"}, {"arrows": "to", "from": "Emmanuel", "to": "world"}, {"arrows": "to", "from": "Ukraine", "to": "Russia"}, {"arrows": "to", "from": "Russia", "to": "Iran"}, {"arrows": "to", "from": "Iran", "to": "world"}, {"arrows": "to", "from": "UK", "to": "Iran"}, {"arrows": "to", "from": "Iran", "to": "News"}, {"arrows": "to", "from": "News", "to": "world"}, {"arrows": "to", "from": "Trump", "to": "Ultimatum"}, {"arrows": "to", "from": "Ultimatum", "to": "Comes"}, {"arrows": "to", "from": "Comes", "to": "world"}, {"arrows": "to", "from": "Israel", "to": "Tehran"}, {"arrows": "to", "from": "Tehran", "to": "Trump"}, {"arrows": "to", "from": "Trump", "to": "world"}, {"arrows": "to", "from": "NATO", "to": "Europe"}, {"arrows": "to", "from": "Europe", "to": "Iran"}, {"arrows": "to", "from": "Iran", "to": "world"}, {"arrows": "to", "from": "Iran", "to": "world"}, {"arrows": "to", "from": "Russia", "to": "ISS"}, {"arrows": "to", "from": "ISS", "to": "Cargo"}, {"arrows": "to", "from": "Cargo", "to": "world"}, {"arrows": "to", "from": "Arad", "to": "Dimona"}, {"arrows": "to", "from": "Dimona", "to": "Times"}, {"arrows": "to", "from": "Times", "to": "world"}, {"arrows": "to", "from": "Slovenia", "to": "world"}, {"arrows": "to", "from": "EU", "to": "Hungary"}, {"arrows": "to", "from": "Hungary", "to": "Russia"}, {"arrows": "to", "from": "Russia", "to": "world"}, {"arrows": "to", "from": "West", "to": "Bank"}, {"arrows": "to", "from": "Bank", "to": "Palestinians"}, {"arrows": "to", "from": "Palestinians", "to": "world"}, {"arrows": "to", "from": "Iran", "to": "Netanyahu"}, {"arrows": "to", "from": "Netanyahu", "to": "Khamenei"}, {"arrows": "to", "from": "Khamenei", "to": "world"}, {"arrows": "to", "from": "Israel", "to": "Orders"}, {"arrows": "to", "from": "Orders", "to": "Military"}, {"arrows": "to", "from": "Military", "to": "world"}, {"arrows": "to", "from": "UN", "to": "News"}, {"arrows": "to", "from": "News", "to": "world"}, {"arrows": "to", "from": "Iran", "to": "Hormuz"}, {"arrows": "to", "from": "Hormuz", "to": "world"}, {"arrows": "to", "from": "Natural", "to": "Gas"}, {"arrows": "to", "from": "Gas", "to": "Markets"}, {"arrows": "to", "from": "Markets", "to": "world"}, {"arrows": "to", "from": "Landmark", "to": "Election"}, {"arrows": "to", "from": "Election", "to": "Shaped"}, {"arrows": "to", "from": "Shaped", "to": "world"}, {"arrows": "to", "from": "Veteran", "to": "IDF"}, {"arrows": "to", "from": "IDF", "to": "Israeli"}, {"arrows": "to", "from": "Israeli", "to": "world"}, {"arrows": "to", "from": "AfD", "to": "Germany"}, {"arrows": "to", "from": "Germany", "to": "world"}, {"arrows": "to", "from": "Ukraine", "to": "Finland"}, {"arrows": "to", "from": "Finland", "to": "France"}, {"arrows": "to", "from": "France", "to": "world"}, {"arrows": "to", "from": "Chileans", "to": "President"}, {"arrows": "to", "from": "President", "to": "Kast"}, {"arrows": "to", "from": "Kast", "to": "world"}, {"arrows": "to", "from": "Arrive", "to": "Centcom"}, {"arrows": "to", "from": "Centcom", "to": "Same"}, {"arrows": "to", "from": "Same", "to": "world"}, {"arrows": "to", "from": "Netanyahu", "to": "Europe"}, {"arrows": "to", "from": "Europe", "to": "CPAC"}, {"arrows": "to", "from": "CPAC", "to": "world"}, {"arrows": "to", "from": "Ukraine", "to": "Russia"}, {"arrows": "to", "from": "Russia", "to": "world"}, {"arrows": "to", "from": "NATO", "to": "Secretary"}, {"arrows": "to", "from": "Secretary", "to": "General"}, {"arrows": "to", "from": "General", "to": "world"}, {"arrows": "to", "from": "Forever", "to": "Israelis"}, {"arrows": "to", "from": "Israelis", "to": "Iran"}, {"arrows": "to", "from": "Iran", "to": "world"}, {"arrows": "to", "from": "Energy", "to": "Attacks"}, {"arrows": "to", "from": "Attacks", "to": "War"}, {"arrows": "to", "from": "War", "to": "world"}, {"arrows": "to", "from": "Le", "to": "Pen"}, {"arrows": "to", "from": "Pen", "to": "Hungary"}, {"arrows": "to", "from": "Hungary", "to": "world"}, {"arrows": "to", "from": "Benjamin", "to": "Netanyahu"}, {"arrows": "to", "from": "Netanyahu", "to": "Europe"}, {"arrows": "to", "from": "Europe", "to": "world"}, {"arrows": "to", "from": "Lionel", "to": "Jospin"}, {"arrows": "to", "from": "Jospin", "to": "Who"}, {"arrows": "to", "from": "Who", "to": "world"}, {"arrows": "to", "from": "US", "to": "Hormuz"}, {"arrows": "to", "from": "Hormuz", "to": "Strait"}, {"arrows": "to", "from": "Strait", "to": "world"}, {"arrows": "to", "from": "Pit", "to": "world"}, {"arrows": "to", "from": "Netanyahu", "to": "Mossad"}, {"arrows": "to", "from": "Mossad", "to": "Iran"}, {"arrows": "to", "from": "Iran", "to": "world"}, {"arrows": "to", "from": "Pope", "to": "Leo"}, {"arrows": "to", "from": "Leo", "to": "world"}, {"arrows": "to", "from": "Iran", "to": "world"}, {"arrows": "to", "from": "Sudan", "to": "WHO"}, {"arrows": "to", "from": "WHO", "to": "News"}, {"arrows": "to", "from": "News", "to": "world"}, {"arrows": "to", "from": "Strait", "to": "Hormuz"}, {"arrows": "to", "from": "Hormuz", "to": "UAE"}, {"arrows": "to", "from": "UAE", "to": "world"}, {"arrows": "to", "from": "China", "to": "US"}, {"arrows": "to", "from": "US", "to": "Israel"}, {"arrows": "to", "from": "Israel", "to": "world"}, {"arrows": "to", "from": "Pakistan", "to": "Afghanistan"}, {"arrows": "to", "from": "Afghanistan", "to": "Financial"}, {"arrows": "to", "from": "Financial", "to": "world"}, {"arrows": "to", "from": "Russia", "to": "Big"}, {"arrows": "to", "from": "Big", "to": "Winner"}, {"arrows": "to", "from": "Winner", "to": "world"}, {"arrows": "to", "from": "Damascus", "to": "world"}, {"arrows": "to", "from": "Gulf", "to": "Iran"}, {"arrows": "to", "from": "Iran", "to": "Times"}, {"arrows": "to", "from": "Times", "to": "world"}, {"arrows": "to", "from": "Trump", "to": "Tehran"}, {"arrows": "to", "from": "Tehran", "to": "world"}, {"arrows": "to", "from": "Beijing", "to": "Tehran"}, {"arrows": "to", "from": "Tehran", "to": "world"}, {"arrows": "to", "from": "America", "to": "Has"}, {"arrows": "to", "from": "Has", "to": "No"}, {"arrows": "to", "from": "No", "to": "world"}, {"arrows": "to", "from": "Donald", "to": "Trump"}, {"arrows": "to", "from": "Trump", "to": "Iran"}, {"arrows": "to", "from": "Iran", "to": "world"}, {"arrows": "to", "from": "Rough", "to": "Landing"}, {"arrows": "to", "from": "Landing", "to": "Crash"}, {"arrows": "to", "from": "Crash", "to": "business"}, {"arrows": "to", "from": "Bill", "to": "business"}, {"arrows": "to", "from": "Tesla", "to": "Stock"}, {"arrows": "to", "from": "Stock", "to": "Rises"}, {"arrows": "to", "from": "Rises", "to": "business"}, {"arrows": "to", "from": "Est\u00e9e", "to": "Lauder"}, {"arrows": "to", "from": "Lauder", "to": "Talks"}, {"arrows": "to", "from": "Talks", "to": "business"}, {"arrows": "to", "from": "Leonid", "to": "Radvinsky"}, {"arrows": "to", "from": "Radvinsky", "to": "OnlyFans"}, {"arrows": "to", "from": "OnlyFans", "to": "business"}, {"arrows": "to", "from": "US-Iran", "to": "Russia-Ukraine"}, {"arrows": "to", "from": "Russia-Ukraine", "to": "Chevron"}, {"arrows": "to", "from": "Chevron", "to": "business"}, {"arrows": "to", "from": "Lyme", "to": "Pfizer"}, {"arrows": "to", "from": "Pfizer", "to": "Washington"}, {"arrows": "to", "from": "Washington", "to": "business"}, {"arrows": "to", "from": "Toyota", "to": "U.S."}, {"arrows": "to", "from": "U.S.", "to": "Kentucky"}, {"arrows": "to", "from": "Kentucky", "to": "business"}, {"arrows": "to", "from": "Trump", "to": "US"}, {"arrows": "to", "from": "US", "to": "News"}, {"arrows": "to", "from": "News", "to": "business"}, {"arrows": "to", "from": "Dow", "to": "Up"}, {"arrows": "to", "from": "Up", "to": "Trump"}, {"arrows": "to", "from": "Trump", "to": "business"}, {"arrows": "to", "from": "Morgan", "to": "Stanley"}, {"arrows": "to", "from": "Stanley", "to": "business"}, {"arrows": "to", "from": "International", "to": "Energy"}, {"arrows": "to", "from": "Energy", "to": "Agency"}, {"arrows": "to", "from": "Agency", "to": "business"}, {"arrows": "to", "from": "Micron", "to": "Set"}, {"arrows": "to", "from": "Set", "to": "Massive"}, {"arrows": "to", "from": "Massive", "to": "business"}, {"arrows": "to", "from": "White", "to": "House"}, {"arrows": "to", "from": "House", "to": "Houston"}, {"arrows": "to", "from": "Houston", "to": "business"}, {"arrows": "to", "from": "Hard", "to": "Pass"}, {"arrows": "to", "from": "Pass", "to": "Says"}, {"arrows": "to", "from": "Says", "to": "business"}, {"arrows": "to", "from": "Trump", "to": "Strait"}, {"arrows": "to", "from": "Strait", "to": "Hormuz"}, {"arrows": "to", "from": "Hormuz", "to": "business"}, {"arrows": "to", "from": "Apple", "to": "June"}, {"arrows": "to", "from": "June", "to": "WWDC"}, {"arrows": "to", "from": "WWDC", "to": "technology"}, {"arrows": "to", "from": "Intel", "to": "Skipped"}, {"arrows": "to", "from": "Skipped", "to": "Core"}, {"arrows": "to", "from": "Core", "to": "technology"}, {"arrows": "to", "from": "Nvidia", "to": "CEO"}, {"arrows": "to", "from": "CEO", "to": "DLSS"}, {"arrows": "to", "from": "DLSS", "to": "technology"}, {"arrows": "to", "from": "Samsung", "to": "AirDrop"}, {"arrows": "to", "from": "AirDrop", "to": "Galaxy"}, {"arrows": "to", "from": "Galaxy", "to": "technology"}, {"arrows": "to", "from": "Crimson", "to": "Desert"}, {"arrows": "to", "from": "Desert", "to": "Intel"}, {"arrows": "to", "from": "Intel", "to": "technology"}, {"arrows": "to", "from": "Google", "to": "Messages"}, {"arrows": "to", "from": "Messages", "to": "technology"}, {"arrows": "to", "from": "A18", "to": "Chip"}, {"arrows": "to", "from": "Chip", "to": "Apple"}, {"arrows": "to", "from": "Apple", "to": "technology"}, {"arrows": "to", "from": "Ars", "to": "Technica"}, {"arrows": "to", "from": "Technica", "to": "technology"}, {"arrows": "to", "from": "Partner", "to": "Preview"}, {"arrows": "to", "from": "Preview", "to": "Join"}, {"arrows": "to", "from": "Join", "to": "technology"}, {"arrows": "to", "from": "San", "to": "Antonio"}, {"arrows": "to", "from": "Antonio", "to": "Houston"}, {"arrows": "to", "from": "Houston", "to": "science"}, {"arrows": "to", "from": "Bright", "to": "Portland"}, {"arrows": "to", "from": "Portland", "to": "science"}, {"arrows": "to", "from": "NASA", "to": "Revisits"}, {"arrows": "to", "from": "Revisits", "to": "Crab"}, {"arrows": "to", "from": "Crab", "to": "science"}, {"arrows": "to", "from": "Musk", "to": "Offers"}, {"arrows": "to", "from": "Offers", "to": "Sneak"}, {"arrows": "to", "from": "Sneak", "to": "science"}, {"arrows": "to", "from": "Meteor", "to": "Exploded"}, {"arrows": "to", "from": "Exploded", "to": "Over"}, {"arrows": "to", "from": "Over", "to": "science"}, {"arrows": "to", "from": "Comet", "to": "science"}, {"arrows": "to", "from": "From", "to": "Distant"}, {"arrows": "to", "from": "Distant", "to": "Asteroid"}, {"arrows": "to", "from": "Asteroid", "to": "science"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"configure": {"enabled": true, "filter": ["physics"]}, "physics": {"forceAtlas2Based": {"gravitationalConstant": -50, "centralGravity": 0.01, "springLength": 100, "springConstant": 0.08, "damping": 0.4, "avoidOverlap": 1}, "stabilization": {"enabled": true, "iterations": 1000, "updateInterval": 50}}, "interaction": {"dragNodes": true, "hover": true, "navigationButtons": true}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
