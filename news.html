@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional News Portal</title>
+<style>
+body { font-family:"Segoe UI", Arial; background:#f4f6f8; margin:0; color:#333; }
+h1 { text-align:center; margin:20px 0; font-size:2rem; color:#2c3e50; }
+.controls { max-width:1000px; margin:0 auto; padding:0 20px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; align-items:center;}
+.controls input, .controls select { padding:6px 12px; border-radius:5px; border:1px solid #ccc; font-size:1rem; }
+.sort-btn { background:#ffeaa7; border:none; padding:6px 12px; border-radius:5px; cursor:pointer; transition:0.2s; font-size:0.85rem; }
+.sort-btn:hover { background:#fdcb6e; color:#fff; }
+
+#tagFilters { display:flex; flex-wrap:wrap; gap:8px; padding:5px 0; }
+.tag-btn { flex:0 0 auto; white-space:nowrap; background:#dfe6e9; border:none; padding:6px 12px; border-radius:20px; cursor:pointer; transition:0.2s; }
+.tag-btn.active, .tag-btn:hover { background:#0984e3; color:#fff; }
+.tag-btn.more-btn { background:#2ecc71; color:#fff; }
+.tag-btn.less-btn { background:#55efc4; color:#fff; }
+
+.container { max-width:1000px; margin:20px auto; padding:0 20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:20px; }
+.news-card { background:#fff; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); display:flex; flex-direction:column; opacity:0; transform:translateY(20px); animation:fadeIn 0.5s forwards; transition:0.3s; }
+.news-card:hover { transform:translateY(-5px); box-shadow:0 10px 25px rgba(0,0,0,0.2); }
+.news-header { padding:12px 15px; font-size:0.85rem; color:#888; }
+.news-title { padding:0 15px 12px 15px; font-size:1.1rem; font-weight:bold; line-height:1.4; color:#2c3e50; text-decoration:none; word-break:break-word; }
+.news-title:hover { color:#0984e3; }
+.news-tags { padding:0 15px 12px 15px; }
+.tag { display:inline-block; background:#dfe6e9; color:#2d3436; padding:3px 10px; margin:3px 3px 0 0; border-radius:20px; font-size:0.75rem; cursor:default; transition:0.2s; }
+.tag:hover { background:#0984e3; color:#fff; }
+
+#google_translate_element { margin-left:10px; }
+
+@keyframes fadeIn { to { opacity:1; transform:translateY(0); } }
+@media (max-width:600px){ h1{font-size:1.5rem;} .controls{flex-direction:column;align-items:center;} }
+</style>
+</head>
+<body>
+
+<h1>Catalystrix</h1>
+
+<div class="controls">
+  <input type="text" id="searchInput" placeholder="Search news...">
+  <button class="sort-btn" id="sortBtn">Sort by Time ↓</button>
+  <div id="google_translate_element"></div>
+  <div id="tagFilters"></div>
+</div>
+
+<div class="container" id="newsContainer"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script>
+let allNews = [];
+let allTags = [];
+let visibleTagsCount = 10;
+let step = 5;
+let currentTag = '';
+
+// 渲染新闻
+function renderNews(newsData){
+  const container = document.getElementById('newsContainer');
+  container.innerHTML='';
+  newsData.forEach(item=>{
+    const card = document.createElement('div'); card.className='news-card';
+    const header=document.createElement('div'); header.className='news-header'; header.textContent=`Published: ${item.published}`; card.appendChild(header);
+    const title=document.createElement('a'); title.className='news-title'; title.href=item.link; title.target='_blank'; title.textContent=item.title; card.appendChild(title);
+    const tagsDiv=document.createElement('div'); tagsDiv.className='news-tags';
+    (item.TagsArray||[]).forEach(tag=>{
+      const span=document.createElement('span'); span.className='tag'; span.textContent=tag;
+      tagsDiv.appendChild(span);
+    });
+    card.appendChild(tagsDiv);
+    container.appendChild(card);
+  });
+}
+
+// 搜索 + 标签 + 排序
+function filterAndRender(){
+  let filtered = allNews;
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  if(query) filtered = filtered.filter(item => item.title.toLowerCase().includes(query) || (item.Tags&&item.Tags.toLowerCase().includes(query)));
+  if(currentTag) filtered = filtered.filter(item => item.Tags.toLowerCase().includes(currentTag.toLowerCase()));
+  filtered.sort((a,b)=>{
+    const t1=new Date(a.published).getTime(), t2=new Date(b.published).getTime();
+    return t2-t1;
+  });
+  renderNews(filtered);
+}
+
+// 标签按钮
+function buildTagButtons(newsData){
+  const tagCount = {};
+  newsData.forEach(item=>{
+    try{
+      const tags = JSON.parse(item.Tags.replace(/'/g,'"'));
+      item.TagsArray = tags;
+      tags.forEach(t => tagCount[t]=(tagCount[t]||0)+1);
+    }catch(e){}
+  });
+  allTags = Object.keys(tagCount).sort((a,b)=>tagCount[b]-tagCount[a]);
+  visibleTagsCount = Math.min(visibleTagsCount, allTags.length);
+  renderVisibleTags();
+}
+
+function renderVisibleTags(){
+  const container = document.getElementById('tagFilters');
+  container.innerHTML='';
+  const visibleTags = allTags.slice(0, visibleTagsCount);
+  visibleTags.forEach(tag=>{
+    const btn = document.createElement('button'); btn.className='tag-btn'; btn.textContent=tag;
+    btn.addEventListener('click',()=>{
+      currentTag = currentTag===tag?'':tag;
+      updateTagActive(); filterAndRender();
+    });
+    container.appendChild(btn);
+  });
+  if(visibleTagsCount < allTags.length){
+    const moreBtn = document.createElement('button'); moreBtn.className='tag-btn more-btn'; moreBtn.textContent='More';
+    moreBtn.addEventListener('click',()=>{ visibleTagsCount=Math.min(visibleTagsCount+step, allTags.length); renderVisibleTags(); });
+    container.appendChild(moreBtn);
+  }
+  if(visibleTagsCount>10){
+    const lessBtn = document.createElement('button'); lessBtn.className='tag-btn less-btn'; lessBtn.textContent='Less';
+    lessBtn.addEventListener('click',()=>{ visibleTagsCount=Math.max(visibleTagsCount-step,10); renderVisibleTags(); });
+    container.appendChild(lessBtn);
+  }
+  updateTagActive();
+}
+
+function updateTagActive(){
+  Array.from(document.querySelectorAll('#tagFilters .tag-btn')).forEach(b=>b.classList.remove('active'));
+  Array.from(document.querySelectorAll('#tagFilters .tag-btn')).forEach(b=>{ if(b.textContent===currentTag) b.classList.add('active'); });
+}
+
+document.getElementById('searchInput').addEventListener('input',filterAndRender);
+document.getElementById('sortBtn').addEventListener('click',()=>{
+  filterAndRender();
+});
+
+// 加载 CSV
+Papa.parse('./data/news.csv',{
+  download:true,
+  header:true,
+  skipEmptyLines:true,
+  complete:function(results){
+    allNews = results.data.map(n=>({...n, TagsArray: JSON.parse(n.Tags.replace(/'/g,'"'))}));
+    buildTagButtons(allNews);
+    filterAndRender();
+  },
+  error:function(err){ console.error('CSV load error', err); }
+});
+</script>
+
+<!-- Google Translate Widget -->
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'en',
+    includedLanguages: 'en,zh,fr,es,zh-CN,fa,el,zh-TW,de,ar,th,ko,he,ja,ne,id,ms,fil,ru',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+  }, 'google_translate_element');
+}
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>
