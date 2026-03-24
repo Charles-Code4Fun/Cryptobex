@@ -77,7 +77,7 @@ h1 { text-align:center; margin:20px 0; font-size:2rem; color:#2c3e50; }
   <a href="stockIndex.html">Stock</a>
   <a href="coinIndex.html">Crypto</a>
   <a href="forexIndex.html">ForEx</a>
-  <a href="constellation.html">Constellation</a>
+  <a href="constellation.html">Constellationgit</a>
 </div>
 
 
@@ -180,6 +180,28 @@ function updateTagActive(){
   Array.from(document.querySelectorAll('#tagFilters .tag-btn')).forEach(b=>{ if(b.textContent===currentTag) b.classList.add('active'); });
 }
 
+
+function parseTagList(str){
+  if(!str || typeof str !== 'string') return [];
+
+  try{
+    return str
+      .trim()
+      .replace(/^\[|\]$/g,'')        // 去掉 []
+      .split(',')
+      .map(s => s.trim())
+      .map(s => s.replace(/^['"]|['"]$/g,'')) // 去首尾引号
+      .map(s => s.replace(/["']/g,''))        // 清理内部脏引号（关键！）
+      .filter(s => s.length > 0);
+
+  }catch(e){
+    console.warn("Tag parse failed:", str);
+    return [];
+  }
+}
+
+
+
 document.getElementById('searchInput').addEventListener('input',filterAndRender);
 document.getElementById('sortBtn').addEventListener('click',()=>{
   filterAndRender();
@@ -191,7 +213,10 @@ Papa.parse('./data/news.csv',{
   header:true,
   skipEmptyLines:true,
   complete:function(results){
-    allNews = results.data.map(n=>({...n, TagsArray: JSON.parse(n.Tags.replace(/'/g,'"'))}));
+    allNews = results.data.map(n=>({...n, 
+    //TagsArray: JSON.parse(n.Tags.replace(/'/g,'"'))
+    TagsArray: parseTagList(n.Tags) 
+  }));
     buildTagButtons(allNews);
     filterAndRender();
   },
