@@ -137,7 +137,8 @@ tr:hover{
 <div class="top-bar">
     <button onclick="exportPortfolio()">Export</button>
     <button onclick="window.location.href='news.html'">Catalyst</button>
-    <button onclick="window.location.href='constellation.html'">Constellation</button>
+    <!-- <button onclick="window.location.href='constellation.html'">Constellation</button> -->
+    <button onclick="confirmConstellation()">Constellation</button>
 </div>
 
 <!-- ===== CRYPTO ===== -->
@@ -265,6 +266,21 @@ function generateInsight(data,type){
     High Performance + Return alignment detected<br>
     Suggested: Focus on top 3 allocation
     `;
+}
+
+
+function confirmConstellation() {
+    const proceed = confirm(
+        "⚠ Warning:\n\nThis feature may cause discomfort for people with trypophobia or visual sensitivity due to dense node patterns.\n\nDo you want to continue?"
+    );
+
+    if (proceed) {
+        window.location.href = 'constellation.html';
+    } else {
+        // 保持当前页面
+        // 如果你想返回首页，可改成：
+        // window.location.href = 'index.html';
+    }
 }
 
 /* ===== 加载 ===== */
