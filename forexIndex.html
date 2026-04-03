@@ -362,6 +362,8 @@ footer {
 
   <th onclick="sortTable('Sharpe')">Sharpe</th>
   <!-- <th onclick="sortTable('Sortino')">Safety</th> -->
+   <th onclick="sortTable('Win')">Win %</th>
+   <th onclick="sortTable('MDD')">MDD %</th>
 
   <th onclick="sortTable('Signal')">Signal</th>
   <th onclick="sortTable('InvestClass')">Invest Class</th>
@@ -484,6 +486,8 @@ function loadCSV() {
                     SafetyLevel: d.Safety || 'Caution',
 
                     Sharpe: Number(d.sharpRatio) || 0,
+                    Win: Number(d['win']*100 || 0),
+                    MDD: Number(d['mdd']*100 || 0),
 
                     Signal: d['Category signal'] || d.Signal || 'WATCHLIST',
 
@@ -643,6 +647,8 @@ function renderTable() {
 
                 
                 <td style="color:${d.Sharpe >= 1 ? '#00ff9c' : d.Sharpe >= 0.5 ? '#ffd166' : '#ff5c5c'}">  ${d.Sharpe.toFixed(2)}</td>
+                <td>${d.Win.toFixed(2)}%</td>
+                <td>${d.MDD.toFixed(2)}%</td>
 
                 <td class="signal-${d.Signal}">${d.Signal}</td>
 
