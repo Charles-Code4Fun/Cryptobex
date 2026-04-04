@@ -58,6 +58,27 @@ tr:hover{background:#1d2230;}
     border-bottom: 1px solid #1f2430;
 }
 
+
+
+/* ===== Header / Logo ===== */
+.header-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    height: 60px;   /* ← 改小 logo 的关键 */
+    width: auto;
+    object-fit: contain;
+}
+
+.header-title {
+    font-size: 22px;
+    margin: 0;
+    color: #00ff9c;
+}
+
 .top-nav .brand {
     font-size: 18px;
     font-weight: bold;
@@ -240,27 +261,31 @@ footer {
 </style>
 </head>
 <body>
-<amp-auto-ads type="adsense"
+<!-- <amp-auto-ads type="adsense"
         data-ad-client="ca-pub-4853280371546570">
-</amp-auto-ads>
+</amp-auto-ads> -->
+
 
 <div class="top-nav">
-    <span class="brand">📊 Cryptobex</span>
+    <!-- New Header Container replacing the old .brand span -->
+<div class="header-container">
+    <a href="index.html">
+        <img src="logo.png" alt="Logo" class="logo">
+    </a>
+    <!-- <h1 class="header-title">Cybex Pro Dashboard</h1> -->
+</div>
 
+    <!-- Original Right-side Navigation Elements -->
     <div style="display:flex; gap:14px; align-items:center;">
-        <!-- Language Switch -->
         <div class="lang-switch">
             🌐 Language:
             <span id="google_translate_element"></span>
         </div>
-
-        <a href="coinReport.html" class="nav-link">Insights</a>
+        <a href="stockReport.html" class="nav-link">Insights</a>
     </div>
 </div>
 
-
-
-<h1>📊 Cryptobex Rank</h1>
+<h1>Cryptobex Rank</h1>
 
 <div class="insight-row">
     <div class="insight-card" onclick="location.href='coinReport.html'">
@@ -782,7 +807,7 @@ function googleTranslateElementInit() {
     new google.translate.TranslateElement(
         {
             pageLanguage: 'en',
-            includedLanguages: 'en,zh-CN,th,zh-TW,ja,ko,fr,de,es,it,pt,ru,ar',
+            includedLanguages: 'en,zh-CN,th,zh-TW,ja,ko,fr,de,es,it,pt,ru,ar,ne',
             layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL,
             autoDisplay: false
         },

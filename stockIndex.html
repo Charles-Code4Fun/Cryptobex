@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4853280371546570"
-     crossorigin="anonymous"></script>
-<script async custom-element="amp-auto-ads"
-        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
-</script>
+
 <meta charset="UTF-8">
 <title>Cryptobex Quantech</title>
 <style>
@@ -56,6 +52,27 @@ tr:hover{background:#1d2230;}
     margin-bottom: 15px;
     border-bottom: 1px solid #1f2430;
 }
+
+
+/* ===== Header / Logo ===== */
+.header-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    height: 60px;   /* ← 改小 logo 的关键 */
+    width: auto;
+    object-fit: contain;
+}
+
+.header-title {
+    font-size: 22px;
+    margin: 0;
+    color: #00ff9c;
+}
+
 
 .top-nav .brand {
     font-size: 18px;
@@ -158,6 +175,7 @@ tr:hover{background:#1d2230;}
 
 
 
+
 /* Signal colors */
 .signal-ATTENTION{color:#00ff9c; font-weight:bold;}
 .signal-UNDERWEIGHT{color:#ff5c5c; font-weight:bold;}
@@ -239,36 +257,19 @@ footer {
 </style>
 </head>
 <body>
-<amp-auto-ads type="adsense"
+<!-- <amp-auto-ads type="adsense"
         data-ad-client="ca-pub-4853280371546570">
-</amp-auto-ads>
+</amp-auto-ads> -->
 
-
-
-<!-- <div class="top-nav">
-    <span class="brand">📊 Cybetrix</span>
-
-    <div style="display:flex; gap:14px; align-items:center;">
-        <div class="lang-switch">
-            🌐 Language:
-            <span id="google_translate_element"></span>
-        </div>
-
-        <a href="stockReport.html" class="nav-link">Insights</a>
-    </div>
-</div> -->
 
 <div class="top-nav">
     <!-- New Header Container replacing the old .brand span -->
-    <div class="header-container">
+<div class="header-container">
+    <a href="index.html">
         <img src="logo.png" alt="Logo" class="logo">
-        <h1 class="header-title">Cybex Pro Dashboard</h1>
-        <div class="top-bar">
-            <button onclick="exportPortfolio()">Export</button>
-            <button onclick="window.location.href='news.html'">Catalyst</button>
-            <button onclick="confirmConstellation()">Constellation</button>
-        </div>
-    </div>
+    </a>
+    <!-- <h1 class="header-title">Cybex Pro Dashboard</h1> -->
+</div>
 
     <!-- Original Right-side Navigation Elements -->
     <div style="display:flex; gap:14px; align-items:center;">
@@ -281,7 +282,7 @@ footer {
 </div>
 
 
-<h1>📊 Stock Rank</h1>
+<h1>Stock Rank</h1>
 
 <div class="insight-row">
     <div class="insight-card" onclick="location.href='stockReport.html'">
@@ -805,7 +806,7 @@ function googleTranslateElementInit() {
     new google.translate.TranslateElement(
         {
             pageLanguage: 'en',
-            includedLanguages: 'en,zh-CN,th,zh-TW,ja,ko,fr,de,es,it,pt,ru,ar',
+            includedLanguages: 'en,zh-CN,th,zh-TW,ja,ko,fr,de,es,it,pt,ru,ar,ne',
             layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL,
             autoDisplay: false
         },

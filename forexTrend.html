@@ -130,7 +130,7 @@ fetch(ohlcCsvPath)
 
 function renderChart(dates, opens, highs, lows, closes){
     const trace = {x:dates, open:opens, high:highs, low:lows, close:closes, type:'candlestick', increasing:{line:{color:'#00ff9c'}}, decreasing:{line:{color:'#ff5c5c'}}};
-    const layout = {paper_bgcolor:"#0e1117", plot_bgcolor:"#0e1117", font:{color:'#e6e6e6'}, xaxis:{title:'Date', gridcolor:'#222'}, yaxis:{title:'Price', gridcolor:'#222'}};
+    const layout = {paper_bgcolor:"#0e1117", plot_bgcolor:"#0e1117", font:{color:'#e6e6e6'}, xaxis:{title:'Date', gridcolor:'#222'}, yaxis:{title:'Base Strength', gridcolor:'#222'}};
     Plotly.newPlot('chartContainer',[trace], layout, {responsive:true});
 }
 </script>
