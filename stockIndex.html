@@ -243,11 +243,12 @@ footer {
         data-ad-client="ca-pub-4853280371546570">
 </amp-auto-ads>
 
-<div class="top-nav">
+
+
+<!-- <div class="top-nav">
     <span class="brand">📊 Cybetrix</span>
 
     <div style="display:flex; gap:14px; align-items:center;">
-        <!-- Language Switch -->
         <div class="lang-switch">
             🌐 Language:
             <span id="google_translate_element"></span>
@@ -255,8 +256,29 @@ footer {
 
         <a href="stockReport.html" class="nav-link">Insights</a>
     </div>
-</div>
+</div> -->
 
+<div class="top-nav">
+    <!-- New Header Container replacing the old .brand span -->
+    <div class="header-container">
+        <img src="logo.png" alt="Logo" class="logo">
+        <h1 class="header-title">Cybex Pro Dashboard</h1>
+        <div class="top-bar">
+            <button onclick="exportPortfolio()">Export</button>
+            <button onclick="window.location.href='news.html'">Catalyst</button>
+            <button onclick="confirmConstellation()">Constellation</button>
+        </div>
+    </div>
+
+    <!-- Original Right-side Navigation Elements -->
+    <div style="display:flex; gap:14px; align-items:center;">
+        <div class="lang-switch">
+            🌐 Language:
+            <span id="google_translate_element"></span>
+        </div>
+        <a href="stockReport.html" class="nav-link">Insights</a>
+    </div>
+</div>
 
 
 <h1>📊 Stock Rank</h1>
