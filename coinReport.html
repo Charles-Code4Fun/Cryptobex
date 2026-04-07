@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Cryptobex Research Report</title>
+        <link rel="icon" type="image/png" href="icon.png">
 
     <!-- Google AdSense -->
     <!-- <script async
@@ -199,18 +200,18 @@
 
 <!-- ================= Ads loader ================= -->
 <script>
-fetch("ads-module.html")
-    .then(res => res.text())
-    .then(html => {
-        document.querySelectorAll(".ad-slot").forEach(slot => {
-            slot.innerHTML = html;
-            slot.querySelectorAll("ins.adsbygoogle").forEach(ins => {
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            });
-        });
-    })
-    .catch(err => console.error("Ads load failed:", err));
-</script>
+// fetch("ads-module.html")
+//     .then(res => res.text())
+//     .then(html => {
+//         document.querySelectorAll(".ad-slot").forEach(slot => {
+//             slot.innerHTML = html;
+//             slot.querySelectorAll("ins.adsbygoogle").forEach(ins => {
+//                 (adsbygoogle = window.adsbygoogle || []).push({});
+//             });
+//         });
+//     })
+//     .catch(err => console.error("Ads load failed:", err));
+// </script>
 
 <!-- ================= Report loader (关键修复点) ================= -->
 <script>

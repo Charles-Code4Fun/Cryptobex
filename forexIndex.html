@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
+
 <head>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4853280371546570"
+<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4853280371546570"
      crossorigin="anonymous"></script>
 <script async custom-element="amp-auto-ads"
         src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
-</script>
+</script> -->
+
+
 <meta charset="UTF-8">
 <title>Cryptobex Quantech</title>
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="icon" type="image/png" href="logo.png">
+
 <style>
 body { font-family: Arial; background:#0e1117; color:#e6e6e6; margin:20px;}
 h1{text-align:center; margin-bottom:20px;}
@@ -229,7 +236,29 @@ tr:hover{background:#1d2230;}
 .maturity-EARLY { color:#ffd166; }
 
 
+/* ===== Investor Type ===== */
+.investor-safe-defensive { color:#00ff9c; font-weight:bold; }
+.investor-conservative { color:#7fff00; font-weight:bold; }
+.investor-moderately-conservative { color:#9be564; font-weight:bold; }
+.investor-balanced-growth { color:#66c2ff; font-weight:bold; }
+.investor-balanced-aggressive { color:#ffd166; font-weight:bold; }
+.investor-aggressive-growth { color:#ff9f1c; font-weight:bold; }
+.investor-speculative { color:#ff5c5c; font-weight:bold; }
 
+/* ===== Current Stance ===== */
+.stance-safe-hold { color:#00ff9c; font-weight:bold; }
+.stance-defensive-hold { color:#7fff00; font-weight:bold; }
+.stance-watch-dca { color:#ffd166; font-weight:bold; }
+.stance-selective-exposure { color:#66c2ff; font-weight:bold; }
+.stance-high-risk-tactical { color:#ff9f1c; font-weight:bold; }
+.stance-avoid { color:#ff5c5c; font-weight:bold; }
+
+/* ===== Portfolio Role ===== */
+.role-defensive { color:#00ff9c; font-weight:bold; }
+.role-core { color:#7fff00; font-weight:bold; }
+.role-growth { color:#66c2ff; font-weight:bold; }
+.role-highbeta { color:#ff9f1c; font-weight:bold; }
+.role-tactical { color:#ff5c5c; font-weight:bold; }
 
 @media(max-width:800px){table{display:block;overflow-x:auto;}}
 
@@ -257,8 +286,11 @@ footer {
     font-size: 12px;
     color: #aaa;
 }
+
 </style>
 </head>
+
+
 <body>
 <!-- <amp-auto-ads type="adsense"
         data-ad-client="ca-pub-4853280371546570">
@@ -286,7 +318,6 @@ footer {
 
 
 <h1>Foreign Exchange Rank</h1>
-
 <div class="insight-row">
     <div class="insight-card" onclick="location.href='forexReport.html'">
         <div class="insight-title">📘 Insights</div>
@@ -309,10 +340,10 @@ footer {
             • Customised Service
         </div>
     </div>
-
-
 </div>
 
+
+<!-- this is the filter section -->
 <div class="controls">
     <input type="text" id="search" placeholder="Search Symbol (e.g. ADA)" />
     <select id="signalFilter">
@@ -353,6 +384,40 @@ footer {
     <option value="Caution">Caution</option>
     </select>
 
+
+
+<select id="investorTypeFilter">
+    <option value="">All Investor Type</option>
+    <option value="Safe / Defensive">Safe / Defensive</option>
+    <option value="Conservative">Conservative</option>
+    <option value="Moderately Conservative">Moderately Conservative</option>
+    <option value="Balanced Growth">Balanced Growth</option>
+    <option value="Balanced Aggressive">Balanced Aggressive</option>
+    <option value="Aggressive Growth">Aggressive Growth</option>
+    <option value="Speculative">Speculative</option>
+</select>
+
+<select id="stanceFilter">
+    <option value="">All Current Stance</option>
+    <option value="Safe Hold">Safe Hold</option>
+    <option value="Defensive Hold">Defensive Hold</option>
+    <option value="Watch / DCA Only">Watch / DCA Only</option>
+    <option value="Selective Exposure">Selective Exposure</option>
+    <option value="High Risk Tactical Only">High Risk Tactical Only</option>
+    <option value="Avoid / Too Fragile">Avoid / Too Fragile</option>
+</select>
+
+<select id="roleFilter">
+    <option value="">All Portfolio Role</option>
+    <option value="Defensive / Cash Position">Defensive / Cash Position</option>
+    <option value="Core Allocation">Core Allocation</option>
+    <option value="Growth Allocation">Growth Allocation</option>
+    <option value="High-Beta Growth Position">High-Beta Growth Position</option>
+    <option value="Tactical Satellite Position">Tactical Satellite Position</option>
+</select>
+
+
+
     <input type="number" id="minComposite" placeholder="Min Composite" style="width:120px">
     <!-- <input type="number" id="minReturn" placeholder="Min Return %" style="width:120px"> -->
     <input type="number" id="minHealthy" placeholder="Min Healthy" style="width:120px">
@@ -364,7 +429,6 @@ footer {
     <!-- Sharp and Sortino -->
     <input type="number" id="minSharpe" placeholder="Min Sharpe" step="0.1" style="width:110px">
     <!-- <input type="number" id="minSortino" placeholder="Min Sortino" step="0.1" style="width:110px"> -->
-
 
 </div>
 
@@ -393,7 +457,11 @@ footer {
 
   <th onclick="sortTable('Signal')">Signal</th>
   <th onclick="sortTable('InvestClass')">Invest Class</th>
+
   <th onclick="sortTable('Risk')">Risk</th>
+  <th onclick="sortTable('InvestorType')">Investor Type</th>
+  <th onclick="sortTable('CurrentStance')">Current Stance</th>
+  <th onclick="sortTable('PortfolioRole')">Portfolio Role</th>
   <th onclick="sortTable('ReferenceRating')">Reference Rating</th>
   <th onclick="sortTable('Return')">Return %</th>
   <th onclick="sortTable('Strategy')">Strategy</th>
@@ -404,12 +472,18 @@ footer {
 <tbody id="tableBody"></tbody>
 </table>
 
+
 <div class="tooltip" id="tooltip"></div>
+
 
 <footer>
 ⚠️ This platform is not a financial service and is not responsible for investment advice.<br>
 Powered by Cybex
 </footer>
+
+
+
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
@@ -522,11 +596,16 @@ function loadCSV() {
 
                     Risk: d.Risk || '',
 
+                    InvestorType: d['Investor Type'] || '',
+                    CurrentStance: d['Current Stance'] || '',
+                    PortfolioRole: d['Portfolio Role'] || '',
+
                     ReferenceRating: (() => {
                     const r = (d['Reference Rating'] || '').toString().trim();
                     const map = { 'A+':5, 'A':4, 'B+':3, 'B':2, 'C':1 };
                     return map[r] || 0;
                     })(),
+                    
 
 
                     Return: Number(d['Reference Return (%)'] || d['Expected Return (%)']) || 0,
@@ -560,7 +639,11 @@ function getFilters(){
     minHealthy: Number(document.getElementById("minHealthy").value) || null,
     minQuantiment: Number(document.getElementById("minQuantiment").value) || null,
     minSafetyScore: Number(document.getElementById("minSafetyScore").value) || null,
-    minSharpe: Number(document.getElementById("minSharpe").value) || null
+    minSharpe: Number(document.getElementById("minSharpe").value) || null,
+
+    investorType: document.getElementById("investorTypeFilter")?.value || '',
+    stance: document.getElementById("stanceFilter")?.value || '',
+    role: document.getElementById("roleFilter")?.value || '',
 
 
   };
@@ -579,6 +662,10 @@ function applyFilters(row, f){
   if(f.minQuantiment !== null && row.Quantiment < f.minQuantiment) return false;
   if(f.minSafetyScore !== null && row.SafetyScore < f.minSafetyScore) return false;
 
+  if(f.investorType && row.InvestorType !== f.investorType) return false;
+  if(f.stance && row.CurrentStance !== f.stance) return false;
+  if(f.role && row.PortfolioRole !== f.role) return false;
+
 
 
   return true;
@@ -588,6 +675,14 @@ function applyFilters(row, f){
 function renderActiveFilters(filters){
   const box = document.getElementById("activeFilters");
   const items = [];
+
+    if(filters.investorType)
+    items.push(`Investor Type = ${filters.investorType}`);
+  if(filters.stance)
+    items.push(`Stance = ${filters.stance}`);
+
+  if(filters.role)
+    items.push(`Role = ${filters.role}`);
 
   if(filters.minHealthy !== null)
     items.push(`Healthy ≥ ${filters.minHealthy}`);
@@ -682,8 +777,13 @@ function renderTable() {
 
                 <td>${formatRisk(d.Risk)}</td>
 
-                <td>${formatReferenceRating(d.ReferenceRating)}</td>
+                <td>${formatInvestorType(d.InvestorType)}</td>
 
+                <td>${formatCurrentStance(d.CurrentStance)}</td>
+
+                <td>${formatPortfolioRole(d.PortfolioRole)}</td>
+
+                <td>${formatReferenceRating(d.ReferenceRating)}</td>
 
                 <td>${d.Return.toFixed(2)}%</td>
 
@@ -710,6 +810,51 @@ function formatReferenceRating(score){
     return `<span style="color:${r.color};font-weight:bold">${r.label} ${stars}</span>`;
 }
 
+function slugify(text){
+    return String(text || '')
+        .toLowerCase()
+        .replace(/\//g, '-')
+        .replace(/\s+/g, '-')
+        .replace(/[^\w-]/g, '');
+}
+
+function formatInvestorType(type){
+    const clsMap = {
+        'Safe / Defensive': 'investor-safe-defensive',
+        'Conservative': 'investor-conservative',
+        'Moderately Conservative': 'investor-moderately-conservative',
+        'Balanced Growth': 'investor-balanced-growth',
+        'Balanced Aggressive': 'investor-balanced-aggressive',
+        'Aggressive Growth': 'investor-aggressive-growth',
+        'Speculative': 'investor-speculative'
+    };
+    const cls = clsMap[type] || '';
+    return `<span class="${cls}">${escapeHtml(type || '-')}</span>`;
+}
+
+function formatCurrentStance(stance){
+    const clsMap = {
+        'Safe Hold': 'stance-safe-hold',
+        'Defensive Hold': 'stance-defensive-hold',
+        'Watch / DCA Only': 'stance-watch-dca',
+        'Selective Exposure': 'stance-selective-exposure',
+        'High Risk Tactical Only': 'stance-high-risk-tactical',
+        'Avoid / Too Fragile': 'stance-avoid'
+    };
+    const cls = clsMap[stance] || '';
+    return `<span class="${cls}">${escapeHtml(stance || '-')}</span>`;
+}
+
+function formatPortfolioRole(role){
+    let cls = '';
+    if(role.includes('Defensive')) cls = 'role-defensive';
+    else if(role.includes('Core')) cls = 'role-core';
+    else if(role.includes('Growth')) cls = 'role-growth';
+    else if(role.includes('High-Beta')) cls = 'role-highbeta';
+    else if(role.includes('Tactical')) cls = 'role-tactical';
+
+    return `<span class="${cls}">${escapeHtml(role || '-')}</span>`;
+}
 
 
 function sortTable(key) {
@@ -765,6 +910,46 @@ function sortTable(key) {
             };
             va = classOrder[va] || 0;
             vb = classOrder[vb] || 0;
+        }
+
+
+        else if (key === 'InvestorType') {
+            const investorOrder = {
+                'Safe / Defensive': 7,
+                'Conservative': 6,
+                'Moderately Conservative': 5,
+                'Balanced Growth': 4,
+                'Balanced Aggressive': 3,
+                'Aggressive Growth': 2,
+                'Speculative': 1
+            };
+            va = investorOrder[va] || 0;
+            vb = investorOrder[vb] || 0;
+        }
+
+        else if (key === 'CurrentStance') {
+            const stanceOrder = {
+                'Safe Hold': 6,
+                'Defensive Hold': 5,
+                'Selective Exposure': 4,
+                'Watch / DCA Only': 3,
+                'High Risk Tactical Only': 2,
+                'Avoid / Too Fragile': 1
+            };
+            va = stanceOrder[va] || 0;
+            vb = stanceOrder[vb] || 0;
+        }
+
+        else if (key === 'PortfolioRole') {
+            const roleOrder = {
+                'Defensive / Cash Position': 5,
+                'Core Allocation': 4,
+                'Growth Allocation': 3,
+                'High-Beta Growth Position': 2,
+                'Tactical Satellite Position': 1
+            };
+            va = roleOrder[va] || 0;
+            vb = roleOrder[vb] || 0;
         }
 
 
